@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#C65D3E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Kit Cuisine">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Kit Cuisine","short_name":"Cuisine","description":"Trouve ton prochain repas en 2 min","start_url":"./","display":"standalone","orientation":"portrait","background_color":"%23FAF3E7","theme_color":"%23C65D3E","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22110%22 fill=%22%23C65D3E%22/%3E%3Ccircle cx=%22256%22 cy=%22270%22 r=%22130%22 fill=%22%23FAF0DC%22/%3E%3Ccircle cx=%22256%22 cy=%22270%22 r=%22108%22 fill=%22%23fff%22/%3E%3Crect x=%22120%22 y=%22150%22 width=%2220%22 height=%22220%22 rx=%2210%22 fill=%22%23fff%22/%3E%3Crect x=%22372%22 y=%22150%22 width=%2220%22 height=%22220%22 rx=%2210%22 fill=%22%23fff%22/%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}'>
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="%23C65D3E"/><circle cx="50" cy="55" r="26" fill="%23fff"/><rect x="22" y="28" width="4" height="44" rx="2" fill="%23fff"/><rect x="74" y="28" width="4" height="44" rx="2" fill="%23fff"/></svg>'>
+<title>Kit Cuisine — Qu'est-ce qu'on mange ?</title>
+<style>
+:root {
+  --primary: #C65D3E;
+  --primary-dark: #A54B30;
+  --primary-light: #FFF5EC;
+  --secondary: #6B7F3F;
+  --secondary-light: #F0F3E8;
+  --cream: #FAF3E7;
+  --cream-dark: #F0E6D2;
+  --dark: #2D2418;
+  --gray: #8A8070;
+  --gray-light: #D4C7AE;
+  --white: #FFFFFF;
+  --shadow: 0 2px 8px rgba(45, 36, 24, 0.08);
+  --shadow-lg: 0 8px 24px rgba(45, 36, 24, 0.15);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-lg: 24px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { overscroll-behavior: none; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 96px; }
+
+/* Header */
+header {
+  padding: 20px 20px 14px;
+  background: var(--cream);
+  position: sticky; top: 0; z-index: 10;
+  border-bottom: 1px solid rgba(45,36,24,0.05);
+}
+.title { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
+.subtitle { font-size: 13px; color: var(--gray); margin-top: 2px; }
+
+/* Main */
+main { padding: 16px 20px; }
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  max-width: 480px; width: 100%;
+  display: flex; justify-content: space-around;
+  background: var(--white);
+  border-top: 1px solid rgba(45,36,24,0.08);
+  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  z-index: 20;
+}
+.nav-btn {
+  flex: 1; background: none; border: none; padding: 8px 4px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--gray); cursor: pointer; font-family: inherit;
+  transition: color 0.2s;
+}
+.nav-btn.active { color: var(--primary); }
+.nav-btn svg { width: 22px; height: 22px; }
+.nav-btn span { font-size: 11px; font-weight: 600; }
+
+/* Discover */
+.section-title { font-size: 18px; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.01em; }
+.recipes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.recipe-card {
+  background: var(--white); border-radius: var(--radius);
+  overflow: hidden; box-shadow: var(--shadow);
+  cursor: pointer; transition: transform 0.15s;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+.recipe-card:active { transform: scale(0.97); }
+.recipe-img-wrap {
+  width: 100%; aspect-ratio: 4/3;
+  background: linear-gradient(135deg, #3a2e1c 0%, #2D2418 100%);
+  position: relative; overflow: hidden;
+}
+.recipe-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.4s;
+}
+.recipe-card:active .recipe-img-wrap img { transform: scale(1.04); }
+.recipe-content { padding: 10px 12px 12px; }
+.recipe-name { font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 6px; min-height: 36px; }
+.recipe-meta { display: flex; gap: 10px; font-size: 11px; color: var(--gray); }
+.recipe-meta span { display: flex; align-items: center; gap: 3px; font-weight: 500; }
+.fav-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(255,255,255,0.95); border: none; border-radius: 50%;
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 3;
+}
+
+/* Composer — The Plate */
+.plate-wrapper { display: flex; justify-content: center; margin-bottom: 8px; }
+.plate {
+  width: 240px; height: 240px;
+  background: radial-gradient(circle at 35% 30%, #fff 0%, #FAF0DC 50%, #E0D3B8 85%, #C9B896 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 16px 40px rgba(45,36,24,0.22), inset 0 3px 8px rgba(255,255,255,0.6), inset 0 -6px 12px rgba(45,36,24,0.08);
+  position: relative; overflow: hidden;
+}
+.plate::before {
+  content: ''; position: absolute; inset: 10px;
+  border-radius: 50%; border: 2px solid rgba(45,36,24,0.06);
+}
+.plate-empty {
+  font-size: 13px; color: var(--gray); text-align: center; padding: 30px;
+  font-weight: 500;
+}
+.plate-empty-emoji { font-size: 44px; margin-bottom: 8px; opacity: 0.35; }
+.plate-content {
+  display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; align-items: center;
+  padding: 38px 30px; max-width: 100%; max-height: 100%;
+}
+.plate-item {
+  font-size: 30px; animation: pop 0.35s cubic-bezier(.2,.8,.3,1.2);
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,0.12));
+}
+@keyframes pop {
+  0% { transform: scale(0) rotate(-30deg); }
+  70% { transform: scale(1.25) rotate(8deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.composer-info {
+  text-align: center; margin-bottom: 18px; padding: 0 8px;
+  font-size: 13px; color: var(--gray); font-weight: 500;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.composer-info strong { color: var(--primary); font-weight: 800; }
+.clear-btn {
+  background: var(--primary-light); border: none; color: var(--primary);
+  font-weight: 700; font-size: 12px; cursor: pointer;
+  font-family: inherit; padding: 5px 12px; border-radius: 12px;
+}
+
+/* Category tabs */
+.cat-tabs {
+  display: flex; overflow-x: auto; gap: 8px; padding-bottom: 4px;
+  margin: 4px -20px 14px; padding-left: 20px; padding-right: 20px;
+  scrollbar-width: none;
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  flex-shrink: 0; padding: 9px 15px; border-radius: 20px;
+  background: var(--white); border: 1.5px solid transparent;
+  font-size: 13px; font-weight: 700; color: var(--dark);
+  cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.cat-tab.active {
+  background: var(--dark); color: var(--white);
+}
+
+/* Ingredient cards */
+.ingredients-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.ing-card {
+  background: var(--white); border-radius: var(--radius-sm);
+  padding: 10px 4px 8px; text-align: center; cursor: pointer;
+  border: 2px solid transparent; transition: all 0.15s;
+  position: relative; min-height: 90px;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+.ing-card:active { transform: scale(0.94); }
+.ing-card.selected {
+  border-color: var(--primary); background: var(--primary-light);
+}
+.ing-circle {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 6px;
+  background: var(--cat-bg, #F0E6D2);
+  box-shadow: inset 0 -3px 6px rgba(0,0,0,0.05);
+  transition: transform 0.15s;
+}
+.ing-card.selected .ing-circle { transform: scale(1.05); }
+.ing-emoji { font-size: 28px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1)); }
+.ing-name { font-size: 10px; font-weight: 600; line-height: 1.15; color: var(--dark); }
+.ing-check {
+  position: absolute; top: 4px; right: 4px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--primary); color: white; font-size: 11px;
+  display: none; align-items: center; justify-content: center; font-weight: 900;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.ing-card.selected .ing-check { display: flex; }
+
+/* Palette par catégorie (subtile, agréable, mémorable) */
+.cat-bases { --cat-bg: #F2E3C5; }
+.cat-proteines { --cat-bg: #FFD9CC; }
+.cat-legumes { --cat-bg: #DCEAC9; }
+.cat-laitiers { --cat-bg: #FFF1D1; }
+.cat-condiments { --cat-bg: #FFE4B5; }
+.cat-epices { --cat-bg: #FFCBB0; }
+
+/* Suggestions */
+.suggestions { margin-top: 26px; }
+.sugg-card {
+  background: var(--white); border-radius: var(--radius);
+  padding: 14px; margin-bottom: 10px; box-shadow: var(--shadow);
+  display: flex; align-items: center; gap: 14px;
+  cursor: pointer; transition: transform 0.15s;
+}
+.sugg-card:active { transform: scale(0.98); }
+.sugg-emoji { font-size: 38px; flex-shrink: 0; }
+.sugg-info { flex: 1; min-width: 0; }
+.sugg-name { font-weight: 700; margin-bottom: 3px; font-size: 14px; }
+.sugg-match { font-size: 11px; color: var(--secondary); font-weight: 700; }
+.sugg-missing { font-size: 11px; color: var(--gray); margin-top: 3px; line-height: 1.3; }
+.match-bar {
+  width: 100%; height: 5px; background: #EEE7D8; border-radius: 3px;
+  margin-top: 7px; overflow: hidden;
+}
+.match-bar-fill { height: 100%; background: var(--secondary); border-radius: 3px; transition: width 0.3s; }
+.match-bar-fill.full { background: var(--primary); }
+
+/* Filter chips */
+.filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-chip {
+  padding: 7px 13px; border-radius: 16px; background: var(--white);
+  font-size: 12px; font-weight: 700; color: var(--dark);
+  border: 1px solid transparent; cursor: pointer;
+  font-family: inherit; text-transform: capitalize;
+}
+.filter-chip.active { background: var(--secondary); color: white; }
+
+/* Tags */
+.recipe-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.tag { font-size: 10px; padding: 2px 7px; border-radius: 8px; background: var(--cream-dark); color: var(--dark); font-weight: 700; text-transform: capitalize; }
+
+/* Empty */
+.empty { text-align: center; padding: 50px 20px; color: var(--gray); }
+.empty-emoji { font-size: 54px; margin-bottom: 14px; opacity: 0.5; }
+.empty-text { font-size: 14px; line-height: 1.5; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(15,10,5,0.55);
+  z-index: 100; display: none; align-items: flex-end;
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--cream); width: 100%; max-width: 480px; margin: 0 auto;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  max-height: 90vh; overflow-y: auto; padding: 16px 20px 40px;
+  animation: slideUp 0.35s cubic-bezier(.2,.9,.3,1);
+  -webkit-overflow-scrolling: touch;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-handle { width: 40px; height: 4px; background: #CFC4AE; border-radius: 2px; margin: 0 auto 18px; }
+.modal-hero {
+  width: calc(100% + 40px); margin: -16px -20px 16px;
+  aspect-ratio: 16/10;
+  background: linear-gradient(135deg, #3a2e1c 0%, #2D2418 100%);
+  position: relative; overflow: hidden;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.modal-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.modal-hero-gradient {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(45,36,24,0.5) 100%);
+}
+.modal-title { font-size: 24px; font-weight: 800; text-align: center; letter-spacing: -0.02em; line-height: 1.2; padding: 0 10px; }
+.modal-meta { display: flex; justify-content: center; gap: 18px; margin: 14px 0 10px; font-size: 13px; color: var(--gray); font-weight: 600; }
+.modal-section { margin-bottom: 22px; }
+.modal-section h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gray); margin-bottom: 10px; font-weight: 800; }
+.modal-ing-list { list-style: none; }
+.modal-ing-list li {
+  padding: 9px 10px; border-radius: 8px; font-size: 14px;
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 2px;
+}
+.modal-ing-list li.have { background: var(--secondary-light); color: var(--dark); font-weight: 600; }
+.modal-ing-list li.missing { color: var(--gray); }
+.modal-ing-list li .ing-ico { font-size: 18px; }
+
+.modal-steps { list-style: none; counter-reset: step; }
+.modal-steps li {
+  counter-increment: step;
+  padding: 11px 0 11px 42px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.modal-steps li::before {
+  content: counter(step);
+  position: absolute; left: 0; top: 9px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--primary); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 13px;
+}
+
+.modal-close {
+  position: absolute; top: 14px; right: 16px;
+  background: rgba(255,255,255,0.95); border: none;
+  width: 34px; height: 34px; border-radius: 50%; font-size: 16px;
+  cursor: pointer; box-shadow: var(--shadow); font-weight: 700;
+  z-index: 2;
+}
+
+/* Buttons */
+.btn-primary {
+  width: 100%; padding: 15px; border-radius: var(--radius);
+  background: var(--primary); color: white; border: none;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  font-family: inherit; margin-top: 20px;
+  letter-spacing: -0.01em;
+}
+.btn-primary:active { background: var(--primary-dark); }
+.btn-ghost {
+  width: 100%; padding: 13px; border-radius: var(--radius);
+  background: transparent; color: var(--primary); border: 1.5px solid var(--primary);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: inherit; margin-top: 10px;
+}
+
+/* Shopping */
+.shopping-group { margin-bottom: 22px; }
+.shopping-group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary); margin-bottom: 10px; font-weight: 800; }
+.shop-item {
+  background: var(--white); padding: 12px 14px; border-radius: var(--radius-sm);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 12px; cursor: pointer;
+  font-size: 14px; transition: opacity 0.2s; font-weight: 500;
+}
+.shop-item.done { opacity: 0.45; text-decoration: line-through; }
+.shop-check { width: 22px; height: 22px; border: 2px solid var(--gray-light); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 900; }
+.shop-item.done .shop-check { background: var(--secondary); border-color: var(--secondary); }
+.shop-item.done .shop-check::after { content: '✓'; }
+.shop-emoji { font-size: 22px; }
+
+.flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+
+/* Helper text */
+.hint {
+  background: var(--white); border-radius: var(--radius);
+  padding: 14px 16px; margin-bottom: 20px;
+  font-size: 13px; color: var(--gray); line-height: 1.5;
+  border-left: 3px solid var(--primary);
+}
+.hint strong { color: var(--dark); }
+
+/* Header settings button */
+.header-actions {
+  position: absolute; top: 18px; right: 18px;
+  display: flex; gap: 8px;
+}
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--white); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; box-shadow: var(--shadow); font-family: inherit;
+  position: relative;
+}
+.icon-btn.pulse::after {
+  content: ''; position: absolute; inset: -2px; border-radius: 50%;
+  border: 2px solid var(--primary); animation: pulse 1.8s infinite;
+}
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+header { position: relative; }
+
+/* Premium lock on cards */
+.recipe-card.locked .recipe-img-wrap img { filter: blur(6px) brightness(0.85); }
+.recipe-card.locked .recipe-content { opacity: 0.6; }
+.lock-overlay {
+  position: absolute; top: 0; left: 0; right: 0;
+  aspect-ratio: 4/3;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 8px;
+  background: linear-gradient(180deg, rgba(45,36,24,0.1) 0%, rgba(45,36,24,0.4) 100%);
+  z-index: 1;
+}
+.lock-icon { font-size: 28px; }
+.lock-label {
+  font-size: 10px; font-weight: 800; color: white;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--primary);
+  padding: 4px 10px; border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.pro-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: linear-gradient(135deg, #C65D3E, #E8B86D);
+  color: white; font-size: 9px; font-weight: 800;
+  padding: 4px 8px; border-radius: 6px;
+  letter-spacing: 0.06em; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  z-index: 3;
+}
+
+/* Suggestion lock */
+.sugg-card.locked {
+  position: relative; background: linear-gradient(135deg, #fff 60%, #FFF5EC 100%);
+  border: 1.5px dashed var(--primary);
+}
+.sugg-card.locked .sugg-name { color: var(--gray); }
+.sugg-lock-tag {
+  font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 6px;
+  background: var(--primary); color: white;
+  display: inline-block; margin-top: 4px; letter-spacing: 0.05em;
+}
+
+/* Premium Modal specific */
+.premium-hero {
+  text-align: center; padding: 10px 0 18px;
+}
+.premium-hero-emoji {
+  font-size: 56px; margin-bottom: 10px;
+  filter: drop-shadow(0 6px 12px rgba(198,93,62,0.3));
+}
+.premium-hero-title {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.premium-hero-sub {
+  font-size: 13px; color: var(--gray); line-height: 1.5;
+}
+.premium-features {
+  background: var(--white); border-radius: var(--radius);
+  padding: 18px; margin-bottom: 16px;
+}
+.premium-feature {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 10px 0; border-bottom: 1px solid rgba(45,36,24,0.06);
+  font-size: 14px;
+}
+.premium-feature:last-child { border-bottom: none; }
+.premium-feature-emoji { font-size: 22px; flex-shrink: 0; }
+.premium-feature-text { font-weight: 600; line-height: 1.4; }
+.premium-feature-sub { font-size: 12px; color: var(--gray); font-weight: 400; margin-top: 2px; }
+
+.premium-price {
+  text-align: center; margin: 20px 0 14px;
+}
+.price-amount { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
+.price-cents { font-size: 20px; font-weight: 700; color: var(--primary); vertical-align: top; }
+.price-label { font-size: 13px; color: var(--gray); display: block; margin-top: -4px; }
+
+.code-input-wrapper {
+  margin-top: 16px; padding-top: 16px;
+  border-top: 1px dashed var(--gray-light);
+}
+.code-input-label { font-size: 12px; color: var(--gray); margin-bottom: 8px; font-weight: 600; text-align: center; }
+.code-input-row { display: flex; gap: 8px; }
+.code-input {
+  flex: 1; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid var(--gray-light); background: var(--white);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  outline: none; transition: border-color 0.15s;
+}
+.code-input:focus { border-color: var(--primary); }
+.code-btn {
+  padding: 0 18px; border-radius: 10px;
+  background: var(--dark); color: white; border: none;
+  font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.code-msg { font-size: 12px; margin-top: 8px; text-align: center; min-height: 16px; font-weight: 600; }
+.code-msg.success { color: var(--secondary); }
+.code-msg.error { color: var(--primary); }
+
+.premium-status {
+  text-align: center; padding: 16px;
+  background: var(--secondary-light); border-radius: var(--radius);
+  margin-bottom: 16px; font-weight: 700; color: var(--secondary);
+}
+.premium-status-emoji { font-size: 32px; display: block; margin-bottom: 6px; }
+
+/* Install banner */
+.install-banner {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white; padding: 14px 16px; border-radius: var(--radius);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+  box-shadow: var(--shadow-lg); cursor: pointer;
+}
+.install-banner-text { flex: 1; font-size: 13px; line-height: 1.4; }
+.install-banner-text strong { font-weight: 800; display: block; margin-bottom: 2px; font-size: 14px; }
+.install-banner-emoji { font-size: 28px; }
+.install-banner-close {
+  background: rgba(255,255,255,0.2); border: none; color: white;
+  width: 26px; height: 26px; border-radius: 50%; font-size: 13px;
+  cursor: pointer; flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="title" id="headerTitle">Qu'est-ce qu'on mange ?</div>
+    <div class="subtitle" id="headerSub">Trouve ton prochain repas en 2 min</div>
+    <div class="header-actions">
+      <button class="icon-btn" id="installBtn" onclick="triggerInstall()" style="display:none;" title="Installer l'app">⬇</button>
+      <button class="icon-btn" id="settingsBtn" onclick="openPremiumModal()" title="Premium / Réglages">✨</button>
+    </div>
+  </header>
+  <main id="content"></main>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" data-tab="discover">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <span>Découvrir</span>
+    </button>
+    <button class="nav-btn" data-tab="composer">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M6 12h12M9 17h6"/></svg>
+      <span>Composer</span>
+    </button>
+    <button class="nav-btn" data-tab="favorites">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+      <span>Favoris</span>
+    </button>
+    <button class="nav-btn" data-tab="shopping">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 8h12M9 21a1 1 0 100-2 1 1 0 000 2zm10 0a1 1 0 100-2 1 1 0 000 2z"/></svg>
+      <span>Courses</span>
+    </button>
+  </nav>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+// ============ DATA ============
+const INGREDIENTS = {
+  bases: { label: 'Bases', items: [
+    {id:'riz', name:'Riz', emoji:'🍚'},
+    {id:'pates', name:'Pâtes', emoji:'🍝'},
+    {id:'pain', name:'Pain', emoji:'🍞'},
+    {id:'quinoa', name:'Quinoa', emoji:'🌾'},
+    {id:'couscous', name:'Couscous', emoji:'🍲'},
+    {id:'pomme_de_terre', name:'Patates', emoji:'🥔'},
+    {id:'tortilla', name:'Tortilla', emoji:'🫓'},
+    {id:'lentilles', name:'Lentilles', emoji:'🟤'},
+  ]},
+  proteines: { label: 'Protéines', items: [
+    {id:'poulet', name:'Poulet', emoji:'🍗'},
+    {id:'boeuf', name:'Bœuf', emoji:'🥩'},
+    {id:'boeuf_hache', name:'Bœuf haché', emoji:'🍖'},
+    {id:'dinde', name:'Dinde', emoji:'🦃'},
+    {id:'agneau', name:'Agneau', emoji:'🍖'},
+    {id:'saumon', name:'Saumon', emoji:'🐟'},
+    {id:'cabillaud', name:'Cabillaud', emoji:'🐠'},
+    {id:'thon', name:'Thon', emoji:'🐟'},
+    {id:'oeufs', name:'Œufs', emoji:'🥚'},
+    {id:'pois_chiches', name:'Pois chiches', emoji:'🫘'},
+    {id:'tofu', name:'Tofu', emoji:'⬜'},
+    {id:'crevettes', name:'Crevettes', emoji:'🦐'},
+  ]},
+  legumes: { label: 'Légumes', items: [
+    {id:'tomate', name:'Tomate', emoji:'🍅'},
+    {id:'oignon', name:'Oignon', emoji:'🧅'},
+    {id:'ail', name:'Ail', emoji:'🧄'},
+    {id:'courgette', name:'Courgette', emoji:'🥒'},
+    {id:'carotte', name:'Carotte', emoji:'🥕'},
+    {id:'poivron', name:'Poivron', emoji:'🫑'},
+    {id:'aubergine', name:'Aubergine', emoji:'🍆'},
+    {id:'epinards', name:'Épinards', emoji:'🥬'},
+    {id:'brocoli', name:'Brocoli', emoji:'🥦'},
+    {id:'champignons', name:'Champignons', emoji:'🍄'},
+    {id:'salade', name:'Salade', emoji:'🥗'},
+    {id:'citron', name:'Citron', emoji:'🍋'},
+    {id:'avocat', name:'Avocat', emoji:'🥑'},
+    {id:'mais', name:'Maïs', emoji:'🌽'},
+  ]},
+  laitiers: { label: 'Laitiers', items: [
+    {id:'lait', name:'Lait', emoji:'🥛'},
+    {id:'beurre', name:'Beurre', emoji:'🧈'},
+    {id:'creme', name:'Crème', emoji:'🥄'},
+    {id:'fromage', name:'Fromage', emoji:'🧀'},
+    {id:'yaourt', name:'Yaourt', emoji:'🥣'},
+    {id:'mozzarella', name:'Mozzarella', emoji:'⚪'},
+    {id:'parmesan', name:'Parmesan', emoji:'🧀'},
+  ]},
+  condiments: { label: 'Condiments', items: [
+    {id:'huile_olive', name:'Huile olive', emoji:'🫒'},
+    {id:'sauce_tomate', name:'Sauce tomate', emoji:'🥫'},
+    {id:'sauce_soja', name:'Soja', emoji:'🥢'},
+    {id:'moutarde', name:'Moutarde', emoji:'💛'},
+    {id:'miel', name:'Miel', emoji:'🍯'},
+    {id:'tahini', name:'Tahini', emoji:'🥜'},
+    {id:'vinaigre', name:'Vinaigre', emoji:'🧪'},
+    {id:'mayo', name:'Mayonnaise', emoji:'🤍'},
+  ]},
+  epices: { label: 'Épices', items: [
+    {id:'sel', name:'Sel', emoji:'🧂'},
+    {id:'poivre', name:'Poivre', emoji:'⚫'},
+    {id:'paprika', name:'Paprika', emoji:'🌶️'},
+    {id:'cumin', name:'Cumin', emoji:'🟤'},
+    {id:'curry', name:'Curry', emoji:'🟡'},
+    {id:'ras_el_hanout', name:'Ras el hanout', emoji:'🧡'},
+    {id:'thym', name:'Thym', emoji:'🌿'},
+    {id:'basilic', name:'Basilic', emoji:'🌱'},
+    {id:'persil', name:'Persil', emoji:'🌿'},
+    {id:'coriandre', name:'Coriandre', emoji:'🌱'},
+    {id:'gingembre', name:'Gingembre', emoji:'🫚'},
+  ]},
+};
+
+const ING_MAP = {};
+const ING_CAT = {};
+Object.entries(INGREDIENTS).forEach(([catKey, cat]) => {
+  cat.items.forEach(i => { ING_MAP[i.id] = i; ING_CAT[i.id] = catKey; });
+});
+
+const RECIPES = [
+  {id:'r1', img:'img/recipes/r1.jpg', name:'Poulet rôti aux herbes', emoji:'🍗', time:50, difficulty:'Facile', servings:4, tags:['familial','four'],
+   ingredients:['poulet','ail','thym','citron','huile_olive','sel','poivre','pomme_de_terre'],
+   steps:['Préchauffe le four à 200°C.','Frotte le poulet avec l\'ail, le thym, l\'huile, le sel et le poivre.','Glisse le demi-citron dans la carcasse.','Dispose les pommes de terre autour.','Enfourne 45 min en arrosant à mi-cuisson.']},
+
+  {id:'r2', name:'Tajine poulet olives citron', emoji:'🫒', time:60, difficulty:'Moyen', servings:4, tags:['maghrébin','mijoté'], premium:true,
+   ingredients:['poulet','oignon','ail','citron','huile_olive','ras_el_hanout','persil','coriandre','sel'],
+   steps:['Fais revenir l\'oignon et l\'ail dans l\'huile.','Ajoute le poulet et les épices.','Couvre d\'eau et laisse mijoter 40 min.','Ajoute citron et olives 10 min avant la fin.','Parsème de persil et coriandre avant de servir.']},
+
+  {id:'r3', name:'Couscous 7 légumes', emoji:'🍲', time:75, difficulty:'Moyen', servings:6, tags:['maghrébin','familial'], premium:true,
+   ingredients:['couscous','agneau','oignon','carotte','courgette','pois_chiches','tomate','ras_el_hanout','persil','huile_olive'],
+   steps:['Fais revenir la viande avec l\'oignon.','Ajoute tomate, épices et eau.','Laisse mijoter 45 min.','Ajoute carottes puis courgettes 15 min avant la fin.','Prépare la semoule à part.','Sers semoule avec bouillon, légumes et viande.']},
+
+  {id:'r4', name:'Pâtes bolognaise', emoji:'🍝', time:40, difficulty:'Facile', servings:4, tags:['italien','familial'],
+   ingredients:['pates','boeuf_hache','oignon','ail','tomate','sauce_tomate','huile_olive','basilic','parmesan'],
+   steps:['Fais revenir oignon et ail.','Ajoute le bœuf haché et laisse dorer 5 min.','Incorpore tomate et sauce. Mijote 20 min.','Cuis les pâtes al dente.','Mélange et sers avec parmesan et basilic.']},
+
+  {id:'r5', name:'Shakshuka', emoji:'🍳', time:25, difficulty:'Facile', servings:3, tags:['végé','rapide'],
+   ingredients:['oeufs','tomate','oignon','ail','poivron','cumin','paprika','huile_olive','persil'],
+   steps:['Fais revenir oignon, ail, poivron.','Ajoute tomates concassées, cumin, paprika.','Laisse réduire 10 min.','Casse les œufs directement dans la sauce.','Couvre et cuis 5-7 min selon cuisson voulue. Parsème de persil.']},
+
+  {id:'r6', name:'Soupe de lentilles corail', emoji:'🥣', time:35, difficulty:'Facile', servings:4, tags:['végé','réconfortant','économique'],
+   ingredients:['lentilles','oignon','ail','carotte','tomate','cumin','curry','huile_olive','citron'],
+   steps:['Fais revenir oignon, ail, carotte.','Ajoute tomate, lentilles, cumin et curry.','Couvre d\'eau (3× le volume des lentilles).','Mijote 20-25 min.','Mixe ou laisse en morceaux. Termine avec un filet de citron.']},
+
+  {id:'r7', name:'Riz sauté au poulet', emoji:'🍚', time:30, difficulty:'Facile', servings:4, tags:['asiatique','rapide'],
+   ingredients:['riz','poulet','oeufs','oignon','ail','gingembre','sauce_soja','huile_olive','carotte','mais'],
+   steps:['Cuis le riz la veille (ou laisse refroidir).','Fais revenir poulet en dés avec ail et gingembre.','Ajoute oignon, carotte, maïs.','Pousse tout sur le côté, casse les œufs au centre.','Incorpore le riz et la sauce soja. Mélange 3 min.']},
+
+  {id:'r8', name:'Curry de poulet', emoji:'🍛', time:45, difficulty:'Moyen', servings:4, tags:['indien','mijoté'], premium:true,
+   ingredients:['poulet','oignon','ail','gingembre','tomate','curry','cumin','yaourt','creme','riz','coriandre'],
+   steps:['Fais revenir oignon, ail, gingembre.','Ajoute poulet en morceaux puis curry et cumin.','Verse tomate et yaourt. Mijote 25 min.','Termine avec un peu de crème.','Sers sur riz basmati, parsème de coriandre.']},
+
+  {id:'r9', name:'Salade César au poulet', emoji:'🥗', time:20, difficulty:'Facile', servings:2, tags:['salade','rapide'],
+   ingredients:['poulet','salade','pain','parmesan','ail','mayo','moutarde','citron','huile_olive'],
+   steps:['Grille le poulet. Coupe en lamelles.','Fais des croûtons : pain + huile + ail, au four 8 min.','Prépare la sauce : mayo + moutarde + citron + ail écrasé + parmesan.','Mélange salade, poulet, croûtons, sauce.','Parsème de copeaux de parmesan.']},
+
+  {id:'r10', name:'Omelette aux légumes', emoji:'🥚', time:15, difficulty:'Facile', servings:2, tags:['rapide','économique'],
+   ingredients:['oeufs','oignon','tomate','poivron','fromage','huile_olive','sel','poivre','persil'],
+   steps:['Bats les œufs avec sel et poivre.','Fais revenir oignon, poivron, tomate.','Verse les œufs. Laisse prendre à feu moyen.','Ajoute fromage râpé avant de plier.','Parsème de persil et sers.']},
+
+  {id:'r11', name:'Ratatouille', emoji:'🍆', time:55, difficulty:'Facile', servings:4, tags:['végé','provençal'],
+   ingredients:['aubergine','courgette','poivron','tomate','oignon','ail','huile_olive','thym','basilic','sel'],
+   steps:['Coupe tous les légumes en dés.','Fais revenir séparément : aubergine, courgette, poivron.','Dans une cocotte : oignon, ail, tomate.','Ajoute tous les légumes, sel, poivre, thym.','Mijote à feu doux 40 min. Termine avec basilic frais.']},
+
+  {id:'r12', name:'Hachis parmentier', emoji:'🥔', time:60, difficulty:'Moyen', servings:4, tags:['familial','gratin'],
+   ingredients:['pomme_de_terre','boeuf_hache','oignon','ail','beurre','lait','fromage','persil','sel','poivre'],
+   steps:['Cuis les pommes de terre, écrase en purée avec beurre et lait.','Fais revenir oignon, ail, bœuf. Assaisonne.','Dans un plat : viande au fond, purée par-dessus.','Parsème de fromage râpé.','Enfourne 25 min à 200°C.']},
+
+  {id:'r13', name:'Boulettes sauce tomate', emoji:'🍖', time:40, difficulty:'Facile', servings:4, tags:['familial','italien'],
+   ingredients:['boeuf_hache','oeufs','pain','ail','persil','oignon','sauce_tomate','huile_olive','basilic','parmesan'],
+   steps:['Mélange viande, œuf, pain mouillé essoré, ail, persil.','Forme des boulettes.','Dore-les dans l\'huile.','Ajoute sauce tomate et basilic. Mijote 20 min.','Sers avec parmesan (et pâtes si tu veux).']},
+
+  {id:'r14', name:'Wrap au poulet', emoji:'🌯', time:20, difficulty:'Facile', servings:2, tags:['rapide','emporter'],
+   ingredients:['tortilla','poulet','salade','tomate','avocat','mayo','moutarde','citron'],
+   steps:['Marine le poulet (citron, moutarde) puis grille-le.','Réchauffe la tortilla 20 sec.','Garnis : mayo, salade, tomate, avocat, poulet.','Plie fermement en wrap.','Coupe en deux en diagonale.']},
+
+  {id:'r15', name:'Saumon citron thym', emoji:'🐟', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide','santé'],
+   ingredients:['saumon','citron','thym','huile_olive','ail','sel','poivre','courgette'],
+   steps:['Préchauffe le four à 200°C.','Dispose saumon et courgette en rondelles sur plaque.','Arrose d\'huile, ajoute citron, ail émincé, thym.','Sel, poivre.','Enfourne 15 min. Sers aussitôt.']},
+
+  {id:'r16', name:'Houmous maison', emoji:'🧆', time:10, difficulty:'Facile', servings:4, tags:['mezze','végé','rapide'],
+   ingredients:['pois_chiches','tahini','citron','ail','huile_olive','cumin','sel','paprika'],
+   steps:['Mixe pois chiches, tahini, jus de citron, ail.','Ajoute huile au fur et à mesure.','Assaisonne cumin et sel.','Dresse dans un plat, creuse un puits au centre.','Arrose d\'huile, saupoudre de paprika.']},
+
+  {id:'r17', name:'Falafels', emoji:'🧆', time:30, difficulty:'Moyen', servings:4, tags:['mezze','végé'], premium:true,
+   ingredients:['pois_chiches','oignon','ail','persil','coriandre','cumin','sel','huile_olive','pain'],
+   steps:['Mixe pois chiches (trempés 12h), oignon, ail, herbes et épices.','Forme des boulettes.','Fais dorer à la poêle ou au four 15 min à 200°C.','Sers dans du pain pita avec salade et sauce yaourt-citron.','Déguste bien chaud.']},
+
+  {id:'r18', name:'Dhal de lentilles', emoji:'🟡', time:35, difficulty:'Facile', servings:4, tags:['indien','végé','économique'], premium:true,
+   ingredients:['lentilles','oignon','ail','gingembre','tomate','curry','cumin','huile_olive','coriandre','riz'],
+   steps:['Fais revenir oignon, ail, gingembre.','Ajoute tomate, curry, cumin.','Verse lentilles + eau (3× le volume).','Mijote 25 min jusqu\'à fondant.','Sers avec riz, parsème de coriandre.']},
+
+  {id:'r19', name:'Pizza maison express', emoji:'🍕', time:35, difficulty:'Moyen', servings:2, tags:['familial','italien'],
+   ingredients:['pain','sauce_tomate','mozzarella','oignon','poivron','champignons','basilic','huile_olive'],
+   steps:['Étale la pâte (ou utilise pain plat type naan).','Étale la sauce tomate.','Dispose mozzarella et garniture.','Enfourne 12 min à 220°C.','Parsème de basilic frais à la sortie.']},
+
+  {id:'r20', name:'Tabbouleh libanais', emoji:'🌿', time:20, difficulty:'Facile', servings:4, tags:['libanais','salade','végé'],
+   ingredients:['couscous','persil','coriandre','tomate','oignon','citron','huile_olive','sel'],
+   steps:['Réhydrate la semoule fine (ou boulgour).','Hache très finement persil (beaucoup), coriandre, oignon.','Coupe la tomate en petits dés.','Mélange avec la semoule.','Assaisonne citron, huile, sel. Laisse reposer 30 min.']},
+
+  {id:'r21', name:'Bowl quinoa équilibré', emoji:'🥗', time:25, difficulty:'Facile', servings:2, tags:['santé','rapide'],
+   ingredients:['quinoa','avocat','tomate','mais','poulet','citron','huile_olive','persil'],
+   steps:['Cuis le quinoa.','Grille le poulet.','Coupe avocat et tomate en dés.','Dresse en bol : quinoa, puis toppings.','Arrose citron + huile, parsème de persil.']},
+
+  {id:'r22', name:'Tacos mexicains', emoji:'🌮', time:30, difficulty:'Facile', servings:3, tags:['mexicain','familial'], premium:true,
+   ingredients:['tortilla','boeuf_hache','oignon','tomate','avocat','salade','cumin','paprika','citron','fromage'],
+   steps:['Fais revenir oignon et bœuf avec cumin et paprika.','Réchauffe les tortillas.','Prépare guacamole : avocat écrasé, citron, sel.','Garnis : viande, salade, tomate, guacamole, fromage.','Plie en deux et déguste.']},
+
+  {id:'r23', name:'Gratin de courgettes', emoji:'🥒', time:45, difficulty:'Facile', servings:4, tags:['gratin','végé'],
+   ingredients:['courgette','oeufs','creme','fromage','ail','thym','sel','poivre','huile_olive'],
+   steps:['Coupe courgettes en rondelles, fais-les suer 10 min.','Bats œufs + crème + sel + poivre + ail.','Dans un plat : courgettes puis appareil.','Couvre de fromage râpé.','Enfourne 30 min à 180°C.']},
+
+  {id:'r24', name:'Pad thaï au poulet', emoji:'🍜', time:30, difficulty:'Moyen', servings:3, tags:['asiatique','wok'], premium:true,
+   ingredients:['pates','poulet','oeufs','ail','gingembre','sauce_soja','citron','miel','carotte','huile_olive'],
+   steps:['Cuis les nouilles.','Dans un wok chaud : ail, gingembre, poulet en lamelles.','Ajoute carotte en julienne.','Pousse sur le côté, casse œufs au centre.','Ajoute nouilles + sauce (soja + citron + miel). Mélange vif 2 min.']},
+
+  {id:'r25', name:'Risotto aux champignons', emoji:'🍄', time:40, difficulty:'Moyen', servings:3, tags:['italien','réconfortant'], premium:true,
+   ingredients:['riz','champignons','oignon','ail','beurre','parmesan','huile_olive','thym','sel','persil'],
+   steps:['Fais revenir oignon et ail.','Ajoute champignons émincés, laisse dorer.','Incorpore le riz, toaste 1 min.','Verse bouillon chaud louche par louche, en remuant.','Après 18 min, termine avec beurre et parmesan. Parsème de persil.']},
+
+  {id:'r26', name:'Chili con carne', emoji:'🌶️', time:50, difficulty:'Facile', servings:4, tags:['mexicain','mijoté','familial'], premium:true,
+   ingredients:['boeuf_hache','oignon','ail','tomate','poivron','pois_chiches','cumin','paprika','huile_olive','coriandre','riz'],
+   steps:['Fais revenir oignon et ail.','Ajoute bœuf haché, laisse dorer.','Incorpore tomate, poivron, pois chiches, cumin, paprika.','Mijote 30 min à couvert.','Sers avec riz et coriandre fraîche.']},
+
+  {id:'r27', name:'Cabillaud provençal', emoji:'🐠', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
+   ingredients:['cabillaud','tomate','oignon','ail','huile_olive','thym','basilic','citron','sel'],
+   steps:['Fais revenir oignon et ail.','Ajoute tomates concassées et thym.','Mijote 10 min.','Dépose les filets de cabillaud dans la sauce.','Couvre et cuis 8-10 min. Termine avec citron et basilic.']},
+
+  {id:'r28', name:'Quinoa aux épinards', emoji:'🌾', time:25, difficulty:'Facile', servings:3, tags:['végé','santé'],
+   ingredients:['quinoa','epinards','oignon','ail','huile_olive','citron','cumin','sel','pois_chiches'],
+   steps:['Fais revenir oignon et ail.','Ajoute quinoa et toaste 2 min.','Couvre d\'eau chaude (2× le volume). Cuis 15 min.','Incorpore épinards et pois chiches en fin de cuisson.','Assaisonne citron et cumin.']},
+
+  {id:'r29', name:'Tomates farcies', emoji:'🍅', time:60, difficulty:'Moyen', servings:4, tags:['familial','four'],
+   ingredients:['tomate','boeuf_hache','riz','oignon','ail','persil','oeufs','huile_olive','thym','sel'],
+   steps:['Évide les tomates, garde les chapeaux.','Mélange viande, riz cru, œuf, oignon, ail, persil.','Farcis les tomates.','Dépose dans un plat, arrose d\'huile.','Enfourne 45 min à 180°C.']},
+
+  {id:'r30', name:'Galette de lentilles', emoji:'🥞', time:30, difficulty:'Facile', servings:4, tags:['végé','économique'],
+   ingredients:['lentilles','oignon','ail','oeufs','cumin','coriandre','huile_olive','citron','yaourt'],
+   steps:['Cuis les lentilles corail 15 min.','Mixe avec oignon, ail, œuf, cumin, coriandre.','Forme des galettes.','Dore à la poêle 3 min par face.','Sers avec un yaourt citronné.']},
+
+  {id:'r31', name:'Crevettes ail-persil', emoji:'🦐', time:15, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
+   ingredients:['crevettes','ail','persil','huile_olive','beurre','citron','pates','sel','poivre'],
+   steps:['Cuis les pâtes.','Dans une poêle : beurre + huile + ail émincé.','Ajoute les crevettes, fais-les sauter 3 min.','Déglace au citron, sale, poivre.','Mélange aux pâtes, parsème de persil.']},
+
+  {id:'r32', name:'Dinde aux légumes rôtis', emoji:'🦃', time:50, difficulty:'Facile', servings:4, tags:['familial','four'],
+   ingredients:['dinde','carotte','pomme_de_terre','oignon','ail','huile_olive','thym','sel','poivre'],
+   steps:['Préchauffe le four à 200°C.','Coupe les légumes en morceaux.','Dispose tout sur une plaque : dinde, légumes, ail entier.','Arrose d\'huile, sel, poivre, thym.','Enfourne 35-40 min en remuant à mi-cuisson.']},
+
+  {id:'r33', name:'Brochettes de bœuf', emoji:'🍢', time:25, difficulty:'Facile', servings:3, tags:['grill','rapide'], premium:true,
+   ingredients:['boeuf','poivron','oignon','huile_olive','paprika','cumin','ail','sel','citron'],
+   steps:['Coupe bœuf et légumes en cubes.','Marine 30 min : huile, paprika, cumin, ail, citron, sel.','Enfile sur des brochettes.','Cuis 3-4 min par face sur plancha ou poêle.','Sers avec riz ou salade.']},
+
+  {id:'r34', name:'Soupe minestrone', emoji:'🥫', time:40, difficulty:'Facile', servings:4, tags:['italien','végé','réconfortant'], premium:true,
+   ingredients:['pates','tomate','carotte','courgette','oignon','ail','pois_chiches','huile_olive','basilic','parmesan','sel'],
+   steps:['Fais revenir oignon, ail, carotte.','Ajoute tomate, courgette, pois chiches.','Couvre d\'eau, mijote 20 min.','Ajoute pâtes en fin (8 min).','Sers avec basilic et parmesan.']},
+
+  {id:'r35', name:'Omelette aux champignons', emoji:'🍳', time:15, difficulty:'Facile', servings:2, tags:['rapide','économique'],
+   ingredients:['oeufs','champignons','ail','beurre','persil','fromage','sel','poivre'],
+   steps:['Fais sauter champignons dans beurre + ail.','Bats les œufs avec sel et poivre.','Verse dans la poêle avec les champignons.','Laisse prendre puis ajoute fromage râpé.','Plie et parsème de persil.']},
+];
+
+// ============ STATE ============
+let state = {
+  tab: 'discover',
+  composerCategory: 'bases',
+  selectedIngredients: new Set(),
+  favorites: new Set(),
+  shoppingList: new Set(),
+  shoppingDone: new Set(),
+  recipeFilter: 'all',
+  isPremium: false,
+  installDismissed: false,
+};
+
+let deferredInstallPrompt = null;
+
+// Lien de paiement à remplacer par AbduLlah (Gumroad, Stripe, etc.)
+const PAYMENT_URL = 'https://gumroad.com/l/kit-cuisine';
+const PRICE_LABEL = '14<span class="price-cents">,90€</span>';
+
+// Codes de déverrouillage. Chaque code peut être unique ou multi-usage.
+// Exemples : code générique vente directe, codes ambassadrices, code testeur
+const UNLOCK_CODES = ['CUISINE2026', 'CHEF', 'BARAKA', 'FAMILLE'];
+
+// ============ PERSISTENCE ============
+const STORAGE_KEY = 'kitCuisine_v1_state';
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      favorites: [...state.favorites],
+      shoppingList: [...state.shoppingList],
+      shoppingDone: [...state.shoppingDone],
+      isPremium: state.isPremium,
+      installDismissed: state.installDismissed,
+    }));
+  } catch (e) { /* localStorage indispo (mode incognito) — silencieux */ }
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    state.favorites = new Set(s.favorites || []);
+    state.shoppingList = new Set(s.shoppingList || []);
+    state.shoppingDone = new Set(s.shoppingDone || []);
+    state.isPremium = !!s.isPremium;
+    state.installDismissed = !!s.installDismissed;
+  } catch (e) { /* corrompu — on repart de zéro */ }
+}
+
+// ============ RENDER ============
+function render() {
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === state.tab));
+
+  const titles = {
+    discover: {t:"Qu'est-ce qu'on mange ?", s:'Trouve ton prochain repas en 2 min'},
+    composer: {t:'Compose ton plat', s:'Sélectionne ce que tu as dans le frigo'},
+    favorites: {t:'Mes favoris', s:'Tes recettes sauvées'},
+    shopping: {t:'Liste de courses', s:'Ce qu\'il te manque'},
+  };
+  document.getElementById('headerTitle').textContent = titles[state.tab].t;
+  document.getElementById('headerSub').textContent = titles[state.tab].s;
+
+  const content = document.getElementById('content');
+  if (state.tab === 'discover') content.innerHTML = renderDiscover();
+  else if (state.tab === 'composer') content.innerHTML = renderComposer();
+  else if (state.tab === 'favorites') content.innerHTML = renderFavorites();
+  else if (state.tab === 'shopping') content.innerHTML = renderShopping();
+}
+
+function renderDiscover() {
+  const tags = ['all','rapide','familial','végé','poisson','asiatique','maghrébin','italien'];
+  const filtered = state.recipeFilter === 'all'
+    ? RECIPES
+    : RECIPES.filter(r => r.tags.some(t => t.toLowerCase() === state.recipeFilter.toLowerCase()));
+  return `
+    ${shouldShowInstallBanner() ? renderInstallBanner() : ''}
+    ${!state.isPremium ? renderPremiumTeaser() : ''}
+    <div class="filter-row">
+      ${tags.map(t => `<button class="filter-chip ${state.recipeFilter===t?'active':''}" onclick="setFilter('${t}')">${t === 'all' ? 'Tout' : t}</button>`).join('')}
+    </div>
+    <div class="section-title">${filtered.length} idée${filtered.length>1?'s':''}</div>
+    <div class="recipes-grid">
+      ${filtered.map(r => renderRecipeCard(r)).join('')}
+    </div>
+  `;
+}
+
+function renderRecipeCard(r) {
+  const locked = r.premium && !state.isPremium;
+  return `
+    <div class="recipe-card ${locked?'locked':''}" onclick="${locked?'openPremiumModal()':`openRecipe('${r.id}')`}">
+      ${r.premium ? '<span class="pro-badge">PRO</span>' : ''}
+      <button class="fav-btn" onclick="event.stopPropagation(); ${locked?'openPremiumModal()':`toggleFav('${r.id}')`}">${state.favorites.has(r.id)?'❤️':'🤍'}</button>
+      <div class="recipe-img-wrap">
+        <img src="${recipeImage(r)}" alt="${escapeXml(r.name)}" loading="lazy">
+        ${locked ? `<div class="lock-overlay"><div class="lock-icon">🔒</div><div class="lock-label">Premium</div></div>` : ''}
+      </div>
+      <div class="recipe-content">
+        <div class="recipe-name">${r.name}</div>
+        <div class="recipe-meta">
+          <span>⏱ ${r.time}'</span>
+          <span>👥 ${r.servings}</span>
+          <span>📊 ${r.difficulty}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderPremiumTeaser() {
+  const locked = RECIPES.filter(r => r.premium).length;
+  return `
+    <div class="install-banner" onclick="openPremiumModal()" style="background:linear-gradient(135deg,#2D2418 0%,#4A3A24 100%);">
+      <div class="install-banner-emoji">✨</div>
+      <div class="install-banner-text">
+        <strong>+${locked} recettes Premium à débloquer</strong>
+        Tajines, curry, falafels, risotto, tacos…
+      </div>
+    </div>
+  `;
+}
+
+function shouldShowInstallBanner() {
+  return deferredInstallPrompt && !state.installDismissed && state.tab === 'discover';
+}
+
+function renderInstallBanner() {
+  return `
+    <div class="install-banner" onclick="triggerInstall()">
+      <div class="install-banner-emoji">📲</div>
+      <div class="install-banner-text">
+        <strong>Installe l'app sur ton écran</strong>
+        Accès en 1 tap, fonctionne hors-ligne
+      </div>
+      <button class="install-banner-close" onclick="event.stopPropagation(); dismissInstall()">✕</button>
+    </div>
+  `;
+}
+
+function renderComposer() {
+  const selected = [...state.selectedIngredients];
+  const cats = Object.entries(INGREDIENTS);
+  const activeCat = INGREDIENTS[state.composerCategory];
+  const sugg = matchingRecipes();
+
+  return `
+    <div class="plate-wrapper">
+      <div class="plate">
+        ${selected.length === 0 ?
+          `<div class="plate-empty">
+            <div class="plate-empty-emoji">🍽️</div>
+            Appuie sur les ingrédients que tu as
+          </div>` :
+          `<div class="plate-content">${selected.slice(0,15).map(id => `<span class="plate-item" title="${ING_MAP[id]?.name||''}">${ING_MAP[id]?.emoji||'•'}</span>`).join('')}</div>`
+        }
+      </div>
+    </div>
+
+    <div class="composer-info">
+      <span><strong>${selected.length}</strong> ingrédient${selected.length>1?'s':''}${sugg.length>0 ? ` · <strong>${sugg.length}</strong> idée${sugg.length>1?'s':''} possible${sugg.length>1?'s':''}` : ''}</span>
+      ${selected.length>0?`<button class="clear-btn" onclick="clearComposer()">Vider</button>`:''}
+    </div>
+
+    <div class="cat-tabs">
+      ${cats.map(([k,c]) => `
+        <button class="cat-tab ${state.composerCategory===k?'active':''}" onclick="setCategory('${k}')">${c.label}</button>
+      `).join('')}
+    </div>
+
+    <div class="ingredients-grid cat-${state.composerCategory}">
+      ${activeCat.items.map(i => `
+        <div class="ing-card ${state.selectedIngredients.has(i.id)?'selected':''}" onclick="toggleIngredient('${i.id}')">
+          <div class="ing-check">✓</div>
+          <div class="ing-circle"><span class="ing-emoji">${i.emoji}</span></div>
+          <div class="ing-name">${i.name}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    ${selected.length >= 2 ? `
+      <div class="suggestions">
+        <div class="section-title">✨ Ce que tu peux faire</div>
+        ${sugg.length > 0 ? sugg.slice(0,8).map(r => {
+          const pct = Math.round(r.matches/r.ingredients.length*100);
+          const locked = r.premium && !state.isPremium;
+          return `
+          <div class="sugg-card ${locked?'locked':''}" onclick="${locked?'openPremiumModal()':`openRecipe('${r.id}')`}">
+            <div class="sugg-emoji">${locked?'🔒':r.emoji}</div>
+            <div class="sugg-info">
+              <div class="sugg-name">${r.name}${locked?' <span class="sugg-lock-tag">PRO</span>':''}</div>
+              <div class="sugg-match">${r.matches}/${r.ingredients.length} ingrédients · ${pct}%</div>
+              ${!locked && r.missing.length>0 && r.missing.length<=4 ? `<div class="sugg-missing">Manque : ${r.missing.map(m => ING_MAP[m]?.name||m).join(', ')}</div>` : ''}
+              <div class="match-bar"><div class="match-bar-fill ${pct>=80?'full':''}" style="width:${pct}%"></div></div>
+            </div>
+          </div>
+        `}).join('') : `<div class="empty"><div class="empty-emoji">🤔</div><div class="empty-text">Rien ne matche exactement.<br>Essaie d'ajouter ou retirer un ingrédient.</div></div>`}
+      </div>
+    ` : selected.length === 1 ? `
+      <div class="hint" style="margin-top:24px;">
+        <strong>Continue !</strong> Ajoute au moins 2 ingrédients pour voir des idées de recettes.
+      </div>
+    ` : `
+      <div class="hint" style="margin-top:24px;">
+        💡 <strong>Astuce :</strong> coche ce que tu as dans ton frigo/placard. Je te montre les recettes possibles avec une barre qui indique le taux de correspondance.
+      </div>
+    `}
+  `;
+}
+
+function renderFavorites() {
+  const favs = RECIPES.filter(r => state.favorites.has(r.id));
+  if (favs.length === 0) {
+    return `<div class="empty"><div class="empty-emoji">❤️</div><div class="empty-text">Aucun favori pour l'instant.<br>Appuie sur 🤍 sur une recette pour la sauver ici.</div></div>`;
+  }
+  return `
+    <div class="section-title">${favs.length} favori${favs.length>1?'s':''}</div>
+    <div class="recipes-grid">${favs.map(r => renderRecipeCard(r)).join('')}</div>
+  `;
+}
+
+function renderShopping() {
+  if (state.shoppingList.size === 0) {
+    return `<div class="empty"><div class="empty-emoji">🛒</div><div class="empty-text">Liste vide.<br>Ouvre une recette et appuie sur<br>"Ajouter à ma liste" pour la remplir.</div></div>`;
+  }
+  const grouped = {};
+  state.shoppingList.forEach(id => {
+    const catKey = ING_CAT[id];
+    if (!catKey) return;
+    if (!grouped[catKey]) grouped[catKey] = [];
+    grouped[catKey].push(ING_MAP[id]);
+  });
+
+  const total = state.shoppingList.size;
+  const done = state.shoppingDone.size;
+
+  return `
+    <div class="composer-info" style="margin-bottom:18px;">
+      <span><strong>${done}/${total}</strong> cochés</span>
+      <button class="clear-btn" onclick="clearShopping()">Tout effacer</button>
+    </div>
+    ${Object.entries(grouped).map(([catKey, items]) => `
+      <div class="shopping-group">
+        <h3>${INGREDIENTS[catKey].label}</h3>
+        ${items.map(i => `
+          <div class="shop-item ${state.shoppingDone.has(i.id)?'done':''}" onclick="toggleShopDone('${i.id}')">
+            <div class="shop-check"></div>
+            <span class="shop-emoji">${i.emoji}</span>
+            <span>${i.name}</span>
+          </div>
+        `).join('')}
+      </div>
+    `).join('')}
+  `;
+}
+
+// ============ LOGIC ============
+function matchingRecipes() {
+  if (state.selectedIngredients.size === 0) return [];
+  return RECIPES
+    .map(r => {
+      const matches = r.ingredients.filter(i => state.selectedIngredients.has(i)).length;
+      const missing = r.ingredients.filter(i => !state.selectedIngredients.has(i));
+      return {...r, matches, missing};
+    })
+    .filter(r => r.matches >= 2)
+    .sort((a,b) => {
+      // Score = (ratio of match) * match count, penalise beaucoup d'ingrédients manquants
+      const scoreA = (a.matches / a.ingredients.length) * a.matches;
+      const scoreB = (b.matches / b.ingredients.length) * b.matches;
+      return scoreB - scoreA;
+    });
+}
+
+// ============ IMAGES ============
+// Pour AbduLlah : pour brancher tes vraies photos générées avec Nano Banana Pro,
+// ajoute simplement un champ `img: 'img/recipes/r1.jpg'` (ou URL) sur chaque
+// recette du tableau RECIPES. Le placeholder SVG ci-dessous prend le relais
+// automatiquement si `img` est absent — l'app reste donc fonctionnelle pendant
+// que tu génères tes 35 visuels.
+function escapeXml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function placeholderRecipeSvg(r) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#3a2e1c"/>
+        <stop offset="1" stop-color="#1f1812"/>
+      </linearGradient>
+      <radialGradient id="r" cx="50%" cy="38%" r="55%">
+        <stop offset="0" stop-color="rgba(232,184,109,0.22)"/>
+        <stop offset="1" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+    </defs>
+    <rect width="600" height="450" fill="url(#g)"/>
+    <rect width="600" height="450" fill="url(#r)"/>
+    <text x="300" y="240" text-anchor="middle" font-size="160" dominant-baseline="middle">${r.emoji}</text>
+    <text x="300" y="370" text-anchor="middle" font-family="Georgia, serif" font-size="26" font-weight="700" fill="rgba(250,243,231,0.85)">${escapeXml(r.name)}</text>
+    <text x="300" y="402" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="600" fill="rgba(232,184,109,0.7)" letter-spacing="3">PHOTO À VENIR</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+function recipeImage(r) {
+  return r.img || placeholderRecipeSvg(r);
+}
+
+// ============ ACTIONS ============
+function setTab(t) { state.tab = t; render(); window.scrollTo(0,0); }
+function setCategory(c) { state.composerCategory = c; render(); }
+function setFilter(f) { state.recipeFilter = f; render(); }
+
+function toggleIngredient(id) {
+  if (state.selectedIngredients.has(id)) state.selectedIngredients.delete(id);
+  else state.selectedIngredients.add(id);
+  render();
+}
+
+function clearComposer() {
+  state.selectedIngredients.clear();
+  render();
+}
+
+function toggleFav(id) {
+  if (state.favorites.has(id)) state.favorites.delete(id);
+  else state.favorites.add(id);
+  saveState();
+  render();
+}
+
+// ============ PREMIUM ============
+function openPremiumModal() {
+  const modal = document.getElementById('modal');
+  if (state.isPremium) {
+    modal.innerHTML = `
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-handle"></div>
+      <div class="premium-hero">
+        <div class="premium-hero-emoji">✨</div>
+        <div class="premium-hero-title">Kit Cuisine Premium</div>
+      </div>
+      <div class="premium-status">
+        <span class="premium-status-emoji">✅</span>
+        Tu as la version complète
+      </div>
+      <div class="hint">Toutes les recettes sont débloquées. Merci de ton soutien 🙏</div>
+      <button class="btn-ghost" onclick="resetPremium()">Réinitialiser (test)</button>
+    `;
+  } else {
+    const lockedCount = RECIPES.filter(r => r.premium).length;
+    modal.innerHTML = `
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-handle"></div>
+      <div class="premium-hero">
+        <div class="premium-hero-emoji">✨</div>
+        <div class="premium-hero-title">Kit Cuisine Premium</div>
+        <div class="premium-hero-sub">Débloque toutes les recettes du monde,<br>sans pub, sans inscription, à vie.</div>
+      </div>
+
+      <div class="premium-features">
+        <div class="premium-feature">
+          <div class="premium-feature-emoji">🔓</div>
+          <div><div class="premium-feature-text">+${lockedCount} recettes Premium</div><div class="premium-feature-sub">Tajines, falafels, curry, risotto, pad thaï…</div></div>
+        </div>
+        <div class="premium-feature">
+          <div class="premium-feature-emoji">🚫</div>
+          <div><div class="premium-feature-text">Zéro pub, zéro tracking</div><div class="premium-feature-sub">100% offline, tes données restent chez toi</div></div>
+        </div>
+        <div class="premium-feature">
+          <div class="premium-feature-emoji">♾️</div>
+          <div><div class="premium-feature-text">Achat unique, à vie</div><div class="premium-feature-sub">Pas d'abonnement. Mises à jour incluses.</div></div>
+        </div>
+        <div class="premium-feature">
+          <div class="premium-feature-emoji">🥘</div>
+          <div><div class="premium-feature-text">100% halal-friendly</div><div class="premium-feature-sub">Aucune recette à base de porc ou d'alcool</div></div>
+        </div>
+      </div>
+
+      <div class="premium-price">
+        <div><span class="price-amount">${PRICE_LABEL}</span></div>
+        <div class="price-label">Paiement unique · sans engagement</div>
+      </div>
+
+      <button class="btn-primary" onclick="goToPayment()">🛒 Débloquer maintenant</button>
+
+      <div class="code-input-wrapper">
+        <div class="code-input-label">J'ai déjà un code</div>
+        <div class="code-input-row">
+          <input type="text" class="code-input" id="unlockCode" placeholder="Entre ton code" autocomplete="off">
+          <button class="code-btn" onclick="tryUnlockCode()">Valider</button>
+        </div>
+        <div class="code-msg" id="codeMsg"></div>
+      </div>
+    `;
+  }
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function tryUnlockCode() {
+  const input = document.getElementById('unlockCode');
+  const msg = document.getElementById('codeMsg');
+  const code = (input.value || '').trim().toUpperCase();
+  if (!code) return;
+  if (UNLOCK_CODES.includes(code)) {
+    state.isPremium = true;
+    saveState();
+    msg.className = 'code-msg success';
+    msg.textContent = '✓ Code valide ! Toutes les recettes sont débloquées.';
+    setTimeout(() => { closeModal(); render(); }, 1200);
+  } else {
+    msg.className = 'code-msg error';
+    msg.textContent = '✗ Code invalide.';
+    input.value = '';
+  }
+}
+
+function goToPayment() {
+  // À remplacer par la vraie URL Gumroad/Stripe
+  window.open(PAYMENT_URL, '_blank');
+}
+
+function resetPremium() {
+  if (confirm('Repasser en version gratuite ? (utile pour tester)')) {
+    state.isPremium = false;
+    saveState();
+    closeModal();
+    render();
+  }
+}
+
+// ============ INSTALL PROMPT ============
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById('installBtn').style.display = 'flex';
+  if (state.tab === 'discover') render();
+});
+
+async function triggerInstall() {
+  if (!deferredInstallPrompt) {
+    alert('Pour installer : ouvre le menu de ton navigateur et choisis "Ajouter à l\'écran d\'accueil".');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const { outcome } = await deferredInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    deferredInstallPrompt = null;
+    document.getElementById('installBtn').style.display = 'none';
+  }
+  render();
+}
+
+function dismissInstall() {
+  state.installDismissed = true;
+  saveState();
+  render();
+}
+
+function openRecipe(id) {
+  const r = RECIPES.find(x => x.id === id);
+  if (!r) return;
+  const modal = document.getElementById('modal');
+  const havePrefix = state.selectedIngredients.size > 0;
+  modal.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-hero">
+      <img src="${recipeImage(r)}" alt="${escapeXml(r.name)}">
+      <div class="modal-hero-gradient"></div>
+    </div>
+    <div class="modal-handle" style="margin-top:-8px;"></div>
+    <div class="modal-title">${r.name}</div>
+    <div class="modal-meta">
+      <span>⏱ ${r.time} min</span>
+      <span>👥 ${r.servings} pers.</span>
+      <span>📊 ${r.difficulty}</span>
+    </div>
+    <div class="recipe-tags" style="justify-content:center;margin-bottom:18px;">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+
+    <div class="modal-section">
+      <h4>Ingrédients</h4>
+      <ul class="modal-ing-list">
+        ${r.ingredients.map(id => {
+          const ing = ING_MAP[id];
+          const have = havePrefix && state.selectedIngredients.has(id);
+          const cls = !havePrefix ? '' : (have ? 'have' : 'missing');
+          const icon = !havePrefix ? '•' : (have ? '✓' : '○');
+          return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span></li>`;
+        }).join('')}
+      </ul>
+    </div>
+
+    <div class="modal-section">
+      <h4>Préparation</h4>
+      <ol class="modal-steps">
+        ${r.steps.map(s => `<li>${s}</li>`).join('')}
+      </ol>
+    </div>
+
+    <button class="btn-primary" onclick="addMissingToShopping('${r.id}')">🛒 Ajouter le manquant à ma liste</button>
+    <button class="btn-ghost" onclick="toggleFav('${r.id}'); openRecipe('${r.id}')">${state.favorites.has(r.id)?'💔 Retirer des favoris':'❤️ Ajouter aux favoris'}</button>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function addMissingToShopping(rid) {
+  const r = RECIPES.find(x => x.id === rid);
+  let added = 0;
+  r.ingredients.forEach(id => {
+    if (!state.selectedIngredients.has(id)) {
+      state.shoppingList.add(id);
+      added++;
+    }
+  });
+  saveState();
+  closeModal();
+  state.tab = 'shopping';
+  render();
+}
+
+function toggleShopDone(id) {
+  if (state.shoppingDone.has(id)) state.shoppingDone.delete(id);
+  else state.shoppingDone.add(id);
+  saveState();
+  render();
+}
+
+function clearShopping() {
+  if (confirm('Vider la liste de courses ?')) {
+    state.shoppingList.clear();
+    state.shoppingDone.clear();
+    saveState();
+    render();
+  }
+}
+
+// ============ INIT ============
+loadState();
+
+document.querySelectorAll('.nav-btn').forEach(b => {
+  b.addEventListener('click', () => setTab(b.dataset.tab));
+});
+
+// Service worker basique pour mise en cache offline.
+// NB : single-file => SW généré via Blob. Le scope étant limité, l'app reste
+// pleinement fonctionnelle même si l'enregistrement échoue (tout est inline).
+if ('serviceWorker' in navigator) {
+  try {
+    const swCode = `
+      const CACHE = 'kit-cuisine-v1';
+      self.addEventListener('install', e => self.skipWaiting());
+      self.addEventListener('activate', e => self.clients.claim());
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
+            if (resp && resp.status === 200) {
+              const clone = resp.clone();
+              caches.open(CACHE).then(c => c.put(e.request, clone));
+            }
+            return resp;
+          }).catch(() => caches.match(e.request)))
+        );
+      });
+    `;
+    const blob = new Blob([swCode], { type: 'application/javascript' });
+    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+  } catch (e) { /* SW pas dispo — pas grave, l'app marche quand même */ }
+}
+
+// Détecter si déjà installé (mode standalone)
+if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+  document.body.classList.add('installed');
+}
+
+render();
+</script>
+</body>
+</html>

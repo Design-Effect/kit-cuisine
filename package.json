@@ -1,0 +1,9 @@
+{
+  "name": "kit-cuisine",
+  "private": true,
+  "version": "1.2.0",
+  "description": "Outils du Kit Cuisine (pipeline photos recettes)",
+  "dependencies": {
+    "sharp": "^0.34.0"
+  }
+}
