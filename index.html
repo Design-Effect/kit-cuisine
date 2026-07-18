@@ -657,9 +657,9 @@ const INGREDIENTS = {
     {id:'couscous', name:'Couscous', emoji:'🍲'},
     {id:'pomme_de_terre', name:'Patates', emoji:'🥔'},
     {id:'tortilla', name:'Tortilla', emoji:'🫓'},
-    {id:'lentilles', name:'Lentilles', emoji:'🟤'},
   ]},
   proteines: { label: 'Protéines', items: [
+    {id:'lentilles', name:'Lentilles', emoji:'🟤'},
     {id:'poulet', name:'Poulet', emoji:'🍗'},
     {id:'boeuf', name:'Bœuf', emoji:'🥩'},
     {id:'boeuf_hache', name:'Bœuf haché', emoji:'🍖'},
@@ -1345,11 +1345,10 @@ function matchingRecipes() {
       return {...r, matches, missing, usefulCount: useful.length};
     })
     .filter(r => {
-      // La protéine définit le plat : si l'utilisateur a choisi une protéine,
-      // exclure les plats dont la protéine est différente (bœuf ≠ saumon).
-      const rProteins = r.ingredients.filter(i => PROTS.has(i));
-      const protMatch = rProteins.some(p => state.selectedIngredients.has(p));
-      if (selProteins.length && rProteins.length && !protMatch) return false;
+      // La protéine définit le plat : dès qu'une protéine est choisie (viande,
+      // poisson, œufs, lentilles…), ne proposer QUE des plats qui la contiennent.
+      const protMatch = r.ingredients.some(p => PROTS.has(p) && state.selectedIngredients.has(p));
+      if (selProteins.length && !protMatch) return false;
       // Avoir la bonne protéine suffit à proposer le plat (avec le manquant).
       return r.matches >= 2 || (protMatch && r.matches >= 1);
     })
