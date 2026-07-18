@@ -1,8 +1,8 @@
 {
-  "name": "kit-cuisine",
+  "name": "keskonmange",
   "private": true,
   "version": "1.2.0",
-  "description": "Outils du Kit Cuisine (pipeline photos recettes)",
+  "description": "Outils de Keskonmange (pipeline photos recettes)",
   "dependencies": {
     "sharp": "^0.34.0"
   }

@@ -1,6 +1,6 @@
 {
-  "name": "Kit Cuisine",
-  "short_name": "Cuisine",
+  "name": "Keskonmange",
+  "short_name": "Keskonmange",
   "description": "Trouve ton prochain repas en 2 min",
   "start_url": "./",
   "scope": "./",

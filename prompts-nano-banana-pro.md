@@ -1,4 +1,4 @@
-# Kit Cuisine — Génération des 35 photos avec Nano Banana Pro
+# Keskonmange — Génération des 35 photos avec Nano Banana Pro
 
 Ce document te donne tout ce qu'il te faut pour générer les 35 visuels de recettes de manière **cohérente** dans Google AI Studio (modèle Nano Banana Pro / Gemini Image).
 
@@ -51,7 +51,7 @@ img/recipes/r3.jpg   → Couscous 7 légumes
 
 ## 4. Insertion dans le code
 
-Dans `kit-cuisine-v1.2.html`, chaque recette du tableau `RECIPES` doit recevoir un champ `img`. Exemple pour la recette r1 :
+Dans `index.html`, chaque recette du tableau `RECIPES` doit recevoir un champ `img`. Exemple pour la recette r1 :
 
 ```js
 {id:'r1', name:'Poulet rôti aux herbes', emoji:'🍗', img:'img/recipes/r1.jpg', time:50, ...}

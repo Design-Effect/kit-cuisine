@@ -6,20 +6,20 @@
 <meta name="theme-color" content="#C65D3E">
 <meta name="description" content="Qu'est-ce qu'on mange ? 35 recettes illustrées avec quantités précises, composeur par ingrédients et liste de courses intelligente. Fonctionne hors-ligne.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Kit Cuisine — Qu'est-ce qu'on mange ?">
+<meta property="og:title" content="Keskonmange — Qu'est-ce qu'on mange ?">
 <meta property="og:description" content="Trouve ton prochain repas en 2 min : 35 recettes illustrées, quantités adaptées au nombre de personnes, liste de courses intelligente.">
-<meta property="og:url" content="https://design-effect.github.io/kit-cuisine/">
-<meta property="og:image" content="https://design-effect.github.io/kit-cuisine/img/og-image.jpg">
+<meta property="og:url" content="https://design-effect.github.io/keskonmange/">
+<meta property="og:image" content="https://design-effect.github.io/keskonmange/img/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Kit Cuisine">
+<meta name="apple-mobile-web-app-title" content="Keskonmange">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="%23C65D3E"/><circle cx="50" cy="50" r="19" fill="%23FAF0DC"/><circle cx="50" cy="50" r="14" fill="%23fff"/><rect x="17" y="25" width="5" height="50" rx="2.5" fill="%23fff"/><rect x="78" y="25" width="5" height="50" rx="2.5" fill="%23fff"/></svg>'>
-<title>Kit Cuisine — Qu'est-ce qu'on mange ?</title>
+<title>Keskonmange — Qu'est-ce qu'on mange ?</title>
 <style>
 :root {
   --primary: #C65D3E;
@@ -930,7 +930,7 @@ let state = {
 let deferredInstallPrompt = null;
 
 // Lien de paiement à remplacer par AbduLlah (Gumroad, Stripe, etc.)
-const PAYMENT_URL = 'https://gumroad.com/l/kit-cuisine';
+const PAYMENT_URL = 'https://gumroad.com/l/keskonmange';
 const PRICE_LABEL = '14<span class="price-cents">,90€</span>';
 
 // Codes de déverrouillage. Chaque code peut être unique ou multi-usage.
@@ -1455,7 +1455,7 @@ function openPremiumModal() {
       <div class="modal-handle"></div>
       <div class="premium-hero">
         <div class="premium-hero-emoji">✨</div>
-        <div class="premium-hero-title">Kit Cuisine Premium</div>
+        <div class="premium-hero-title">Keskonmange Premium</div>
       </div>
       <div class="premium-status">
         <span class="premium-status-emoji">✅</span>
@@ -1472,7 +1472,7 @@ function openPremiumModal() {
       <div class="modal-handle"></div>
       <div class="premium-hero">
         <div class="premium-hero-emoji">✨</div>
-        <div class="premium-hero-title">Kit Cuisine Premium</div>
+        <div class="premium-hero-title">Keskonmange Premium</div>
         <div class="premium-hero-sub">Débloque toutes les recettes du monde,<br>sans pub, sans inscription, à vie.</div>
       </div>
 
@@ -1623,7 +1623,7 @@ function openRecipe(id) {
       </ol>
     </div>
 
-    <button class="btn-primary" onclick="addMissingToShopping('${r.id}')">🛒 Ajouter le manquant à ma liste</button>
+    <button class="btn-primary" onclick="addMissingToShopping('${r.id}')">🛒 Ajouter les ingrédients à ma liste</button>
     <button class="btn-ghost" onclick="toggleFav('${r.id}'); openRecipe('${r.id}')">${state.favorites.has(r.id)?'💔 Retirer des favoris':'❤️ Ajouter aux favoris'}</button>
   `;
   document.getElementById('modalOverlay').classList.add('open');
@@ -1680,7 +1680,7 @@ function shareShopping() {
     if (!catKey) return;
     (grouped[catKey] = grouped[catKey] || []).push(id);
   });
-  let text = '🛒 Liste de courses — Kit Cuisine\n';
+  let text = '🛒 Liste de courses — Keskonmange\n';
   Object.entries(grouped).forEach(([catKey, ids]) => {
     text += `\n${INGREDIENTS[catKey].label} :\n`;
     ids.forEach(id => {
@@ -1689,7 +1689,7 @@ function shareShopping() {
       text += `• ${ING_MAP[id].name}${qtys ? ' — ' + qtys : ''}\n`;
     });
   });
-  text += '\nhttps://design-effect.github.io/kit-cuisine/';
+  text += '\nhttps://design-effect.github.io/keskonmange/';
   if (navigator.share) navigator.share({ text }).catch(() => {});
   else navigator.clipboard.writeText(text).then(() => alert('Liste copiée !')).catch(() => {});
 }

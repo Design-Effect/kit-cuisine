@@ -1,7 +1,7 @@
-// Service worker Kit Cuisine — offline + installable.
+// Service worker Keskonmange — offline + installable.
 // Page : réseau d'abord (les mises à jour arrivent dès qu'on est en ligne).
 // Reste (photos, icônes, manifest) : cache d'abord.
-const CACHE = 'kit-cuisine-v2';
+const CACHE = 'keskonmange-v1';
 const PRECACHE = ['./', './manifest.webmanifest'];
 
 self.addEventListener('install', e => {
