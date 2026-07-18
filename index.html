@@ -700,6 +700,7 @@ const INGREDIENTS = {
   ]},
   condiments: { label: 'Condiments', items: [
     {id:'huile_olive', name:'Huile olive', emoji:'🫒'},
+    {id:'olives', name:'Olives', emoji:'🫒'},
     {id:'sauce_tomate', name:'Sauce tomate', emoji:'🥫'},
     {id:'sauce_soja', name:'Soja', emoji:'🥢'},
     {id:'moutarde', name:'Moutarde', emoji:'💛'},
@@ -736,8 +737,8 @@ const RECIPES = [
    steps:['Préchauffe le four à 200°C.','Frotte le poulet avec l\'ail, le thym, l\'huile, le sel et le poivre.','Glisse le demi-citron dans la carcasse.','Dispose les pommes de terre autour.','Enfourne 45 min en arrosant à mi-cuisson.']},
 
   {id:'r2', img:'img/recipes/r2.jpg', name:'Tajine poulet olives citron', emoji:'🫒', time:60, difficulty:'Moyen', servings:4, tags:['maghrébin','mijoté'], premium:true,
-   ingredients:['poulet','oignon','ail','citron','huile_olive','ras_el_hanout','persil','coriandre','sel'],
-   qty:{poulet:'4 belles cuisses', oignon:'2, émincés fin', ail:'3 gousses', citron:'1 citron confit (ou frais)', huile_olive:'4 c. à s.', ras_el_hanout:'2 c. à c.', persil:'½ botte', coriandre:'½ botte', sel:'1 c. à c.'},
+   ingredients:['poulet','oignon','ail','citron','olives','huile_olive','ras_el_hanout','persil','coriandre','sel'],
+   qty:{poulet:'4 belles cuisses', oignon:'2, émincés fin', ail:'3 gousses', citron:'1 citron confit (ou frais)', olives:'100 g de vertes, dénoyautées', huile_olive:'4 c. à s.', ras_el_hanout:'2 c. à c.', persil:'½ botte', coriandre:'½ botte', sel:'1 c. à c.'},
    steps:['Fais revenir l\'oignon et l\'ail dans l\'huile.','Ajoute le poulet et les épices.','Couvre d\'eau et laisse mijoter 40 min.','Ajoute citron et olives 10 min avant la fin.','Parsème de persil et coriandre avant de servir.']},
 
   {id:'r3', img:'img/recipes/r3.jpg', name:'Couscous 7 légumes', emoji:'🍲', time:75, difficulty:'Moyen', servings:6, tags:['maghrébin','familial'], premium:true,
@@ -781,8 +782,8 @@ const RECIPES = [
    steps:['Bats les œufs avec sel et poivre.','Fais revenir oignon, poivron, tomate.','Verse les œufs. Laisse prendre à feu moyen.','Ajoute fromage râpé avant de plier.','Parsème de persil et sers.']},
 
   {id:'r11', img:'img/recipes/r11.jpg', name:'Ratatouille', emoji:'🍆', time:55, difficulty:'Facile', servings:4, tags:['végé','provençal'],
-   ingredients:['aubergine','courgette','poivron','tomate','oignon','ail','huile_olive','thym','basilic','sel'],
-   qty:{aubergine:'2, en dés', courgette:'2, en dés', poivron:'2, couleurs mélangées', tomate:'4 bien mûres', oignon:'2', ail:'3 gousses', huile_olive:'6 c. à s.', thym:'3 branches', basilic:'10 feuilles', sel:'1 c. à c.'},
+   ingredients:['aubergine','courgette','poivron','tomate','oignon','ail','huile_olive','thym','basilic','sel','poivre'],
+   qty:{aubergine:'2, en dés', courgette:'2, en dés', poivron:'2, couleurs mélangées', tomate:'4 bien mûres', oignon:'2', ail:'3 gousses', huile_olive:'6 c. à s.', thym:'3 branches', basilic:'10 feuilles', sel:'1 c. à c.', poivre:'4 tours de moulin'},
    steps:['Coupe tous les légumes en dés.','Fais revenir séparément : aubergine, courgette, poivron.','Dans une cocotte : oignon, ail, tomate.','Ajoute tous les légumes, sel, poivre, thym.','Mijote à feu doux 40 min. Termine avec basilic frais.']},
 
   {id:'r12', img:'img/recipes/r12.jpg', name:'Hachis parmentier', emoji:'🥔', time:60, difficulty:'Moyen', servings:4, tags:['familial','gratin'],
@@ -811,8 +812,8 @@ const RECIPES = [
    steps:['Mixe pois chiches, tahini, jus de citron, ail.','Ajoute huile au fur et à mesure.','Assaisonne cumin et sel.','Dresse dans un plat, creuse un puits au centre.','Arrose d\'huile, saupoudre de paprika.']},
 
   {id:'r17', img:'img/recipes/r17.jpg', name:'Falafels', emoji:'🧆', time:30, difficulty:'Moyen', servings:4, tags:['mezze','végé'], premium:true,
-   ingredients:['pois_chiches','oignon','ail','persil','coriandre','cumin','sel','huile_olive','pain'],
-   qty:{pois_chiches:'300 g secs, trempés 12 h (jamais cuits)', oignon:'1', ail:'2 gousses', persil:'½ botte', coriandre:'½ botte', cumin:'2 c. à c.', sel:'1 c. à c.', huile_olive:'3 c. à s. (cuisson)', pain:'4 pains pita'},
+   ingredients:['pois_chiches','oignon','ail','persil','coriandre','cumin','sel','huile_olive','pain','yaourt','citron','salade'],
+   qty:{pois_chiches:'300 g secs, trempés 12 h (jamais cuits)', oignon:'1', ail:'2 gousses', persil:'½ botte', coriandre:'½ botte', cumin:'2 c. à c.', sel:'1 c. à c.', huile_olive:'3 c. à s. (cuisson)', pain:'4 pains pita', yaourt:'2 natures (sauce)', citron:'½ (le jus, pour la sauce)', salade:'quelques feuilles'},
    steps:['Mixe pois chiches (trempés 12h), oignon, ail, herbes et épices.','Forme des boulettes.','Fais dorer à la poêle ou au four 15 min à 200°C.','Sers dans du pain pita avec salade et sauce yaourt-citron.','Déguste bien chaud.']},
 
   {id:'r18', img:'img/recipes/r18.jpg', name:'Dhal de lentilles', emoji:'🟡', time:35, difficulty:'Facile', servings:4, tags:['indien','végé','économique'], premium:true,
@@ -861,9 +862,9 @@ const RECIPES = [
    steps:['Fais revenir oignon et ail.','Ajoute bœuf haché, laisse dorer.','Incorpore tomate, poivron, pois chiches, cumin, paprika.','Mijote 30 min à couvert.','Sers avec riz et coriandre fraîche.']},
 
   {id:'r27', img:'img/recipes/r27.jpg', name:'Cabillaud provençal', emoji:'🐠', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
-   ingredients:['cabillaud','tomate','oignon','ail','huile_olive','thym','basilic','citron','sel'],
-   qty:{cabillaud:'2 dos de 160 g', tomate:'3 bien mûres, concassées', oignon:'1', ail:'2 gousses', huile_olive:'3 c. à s.', thym:'2 branches', basilic:'6 feuilles', citron:'½ (le jus)', sel:'2 pincées'},
-   steps:['Fais revenir oignon et ail.','Ajoute tomates concassées et thym.','Mijote 10 min.','Dépose les filets de cabillaud dans la sauce.','Couvre et cuis 8-10 min. Termine avec citron et basilic.']},
+   ingredients:['cabillaud','tomate','oignon','ail','olives','huile_olive','thym','basilic','citron','sel'],
+   qty:{cabillaud:'2 dos de 160 g', tomate:'3 bien mûres, concassées', oignon:'1', ail:'2 gousses', olives:'60 g de noires (kalamata)', huile_olive:'3 c. à s.', thym:'2 branches', basilic:'6 feuilles', citron:'½ (le jus)', sel:'2 pincées'},
+   steps:['Fais revenir oignon et ail.','Ajoute tomates concassées, olives et thym.','Mijote 10 min.','Dépose les filets de cabillaud dans la sauce.','Couvre et cuis 8-10 min. Termine avec citron et basilic.']},
 
   {id:'r28', img:'img/recipes/r28.jpg', name:'Quinoa aux épinards', emoji:'🌾', time:25, difficulty:'Facile', servings:3, tags:['végé','santé'],
    ingredients:['quinoa','epinards','oignon','ail','huile_olive','citron','cumin','sel','pois_chiches'],
