@@ -244,13 +244,48 @@ main { padding: 16px 20px; }
 .match-bar-fill.full { background: var(--primary); }
 
 /* Filter chips */
-.filter-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.filter-row { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 2px; scrollbar-width: none; }
+.filter-row::-webkit-scrollbar { display: none; }
 .filter-chip {
   padding: 7px 13px; border-radius: 16px; background: var(--white);
   font-size: 12px; font-weight: 700; color: var(--dark);
   border: 1px solid transparent; cursor: pointer;
   font-family: inherit; text-transform: capitalize;
+  flex-shrink: 0; white-space: nowrap;
 }
+
+/* Bouton "Choisis pour moi" + recherche */
+.pick-btn {
+  width: 100%; padding: 14px; border: none; border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: white; font-family: inherit; font-size: 16px; font-weight: 800;
+  cursor: pointer; margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.pick-btn:active { transform: scale(0.98); }
+.search-input {
+  width: 100%; padding: 12px 14px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-light); background: var(--white);
+  font-family: inherit; font-size: 14px; outline: none; margin-bottom: 12px;
+}
+.search-input:focus { border-color: var(--primary); }
+
+/* Bannière taille du foyer */
+.hh-chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.hh-chip {
+  width: 30px; height: 30px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,0.22); color: white;
+  font-family: inherit; font-size: 13px; font-weight: 800; cursor: pointer;
+}
+.hh-chip:active { background: rgba(255,255,255,0.45); }
+
+/* Réglages (écran ✨) */
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  background: var(--white); border-radius: var(--radius);
+  padding: 14px 16px; margin-top: 16px;
+}
+.settings-label { font-size: 14px; font-weight: 700; }
+.settings-sub { font-size: 12px; color: var(--gray); margin-top: 2px; }
 .filter-chip.active { background: var(--secondary); color: white; }
 
 /* Tags */
@@ -834,6 +869,9 @@ let state = {
   shoppingDone: new Set(),
   shoppingSrc: {},
   servings: {},
+  household: null,
+  householdAsked: false,
+  search: '',
   recipeFilter: 'all',
   isPremium: false,
   installDismissed: false,
@@ -864,6 +902,8 @@ function saveState() {
       shoppingDone: [...state.shoppingDone],
       shoppingSrc: state.shoppingSrc,
       servings: state.servings,
+      household: state.household,
+      householdAsked: state.householdAsked,
       isPremium: state.isPremium,
       installDismissed: state.installDismissed,
     }));
@@ -879,6 +919,8 @@ function loadState() {
     state.shoppingDone = new Set(s.shoppingDone || []);
     state.shoppingSrc = s.shoppingSrc || {};
     state.servings = s.servings || {};
+    state.household = s.household || null;
+    state.householdAsked = !!s.householdAsked;
     state.isPremium = !!s.isPremium;
     state.installDismissed = !!s.installDismissed;
   } catch (e) { /* corrompu — on repart de zéro */ }
@@ -904,21 +946,67 @@ function render() {
   else if (state.tab === 'shopping') content.innerHTML = renderShopping();
 }
 
-function renderDiscover() {
-  const tags = ['all','rapide','familial','végé','poisson','asiatique','maghrébin','italien'];
-  const filtered = state.recipeFilter === 'all'
-    ? RECIPES
-    : RECIPES.filter(r => r.tags.some(t => t.toLowerCase() === state.recipeFilter.toLowerCase()));
+// Tags triés par fréquence réelle dans les recettes — aucun tag orphelin.
+function discoverTags() {
+  const freq = {};
+  RECIPES.forEach(r => r.tags.forEach(t => { freq[t] = (freq[t] || 0) + 1; }));
+  return Object.keys(freq).sort((a, b) => freq[b] - freq[a]);
+}
+
+function discoverFiltered() {
+  const norm = s => s.toLowerCase().replace(/œ/g, 'oe').normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let list = RECIPES;
+  if (state.recipeFilter === 'quick') list = list.filter(r => r.time <= 30);
+  else if (state.recipeFilter !== 'all') list = list.filter(r => r.tags.some(t => t.toLowerCase() === state.recipeFilter.toLowerCase()));
+  if (state.search.trim()) {
+    const q = norm(state.search.trim());
+    list = list.filter(r =>
+      norm(r.name).includes(q) ||
+      r.tags.some(t => norm(t).includes(q)) ||
+      r.ingredients.some(id => norm(ING_MAP[id] ? ING_MAP[id].name : '').includes(q)));
+  }
+  return list;
+}
+
+function renderResults() {
+  const filtered = discoverFiltered();
+  if (filtered.length === 0) {
+    return `<div class="empty"><div class="empty-emoji">🔍</div><div class="empty-text">Rien trouvé.<br>Essaie un autre mot ou change de filtre.</div></div>`;
+  }
   return `
-    ${shouldShowInstallBanner() ? renderInstallBanner() : ''}
-    ${!state.isPremium ? renderPremiumTeaser() : ''}
-    <div class="filter-row">
-      ${tags.map(t => `<button class="filter-chip ${state.recipeFilter===t?'active':''}" onclick="setFilter('${t}')">${t === 'all' ? 'Tout' : t}</button>`).join('')}
-    </div>
     <div class="section-title">${filtered.length} idée${filtered.length>1?'s':''}</div>
     <div class="recipes-grid">
       ${filtered.map(r => renderRecipeCard(r)).join('')}
     </div>
+  `;
+}
+
+// Ne re-rend que les résultats : le champ garde le focus clavier.
+function onSearch(v) {
+  state.search = v;
+  const el = document.getElementById('recipeResults');
+  if (el) el.innerHTML = renderResults();
+}
+
+function pickForMe() {
+  const pool = discoverFiltered().filter(r => !(r.premium && !state.isPremium));
+  if (pool.length === 0) return;
+  openRecipe(pool[Math.floor(Math.random() * pool.length)].id);
+}
+
+function renderDiscover() {
+  const tags = ['all', 'quick', ...discoverTags()];
+  const label = t => t === 'all' ? 'Tout' : t === 'quick' ? '⏱ −30 min' : t;
+  return `
+    ${shouldShowInstallBanner() ? renderInstallBanner() : ''}
+    ${shouldShowHouseholdBanner() ? renderHouseholdBanner() : ''}
+    ${!state.isPremium ? renderPremiumTeaser() : ''}
+    <button class="pick-btn" onclick="pickForMe()">🍽️ Choisis pour moi</button>
+    <input class="search-input" type="search" placeholder="🔍 Une envie ? Plat, ingrédient…" value="${escapeXml(state.search)}" oninput="onSearch(this.value)">
+    <div class="filter-row">
+      ${tags.map(t => `<button class="filter-chip ${state.recipeFilter===t?'active':''}" onclick="setFilter('${t}')">${label(t)}</button>`).join('')}
+    </div>
+    <div id="recipeResults">${renderResults()}</div>
   `;
 }
 
@@ -959,6 +1047,36 @@ function renderPremiumTeaser() {
 
 function shouldShowInstallBanner() {
   return deferredInstallPrompt && !state.installDismissed && state.tab === 'discover';
+}
+
+function shouldShowHouseholdBanner() {
+  return !state.householdAsked;
+}
+
+function renderHouseholdBanner() {
+  return `
+    <div class="install-banner" style="background:linear-gradient(135deg,var(--secondary) 0%,#55662F 100%);cursor:default;">
+      <div class="install-banner-emoji">👨‍👩‍👧‍👦</div>
+      <div class="install-banner-text">
+        <strong>Vous êtes combien à table ?</strong>
+        <span class="hh-chips">${[1,2,3,4,5,6,7,8].map(n => `<button class="hh-chip" onclick="setHousehold(${n})">${n}</button>`).join('')}</span>
+      </div>
+      <button class="install-banner-close" onclick="dismissHousehold()">✕</button>
+    </div>
+  `;
+}
+
+function setHousehold(n) {
+  state.household = n;
+  state.householdAsked = true;
+  saveState();
+  render();
+}
+
+function dismissHousehold() {
+  state.householdAsked = true;
+  saveState();
+  render();
 }
 
 function renderInstallBanner() {
@@ -1073,7 +1191,10 @@ function renderShopping() {
   return `
     <div class="composer-info" style="margin-bottom:18px;">
       <span><strong>${done}/${total}</strong> cochés</span>
-      <button class="clear-btn" onclick="clearShopping()">Tout effacer</button>
+      <span style="display:flex;gap:12px;">
+        <button class="clear-btn" onclick="shareShopping()">📤 Partager</button>
+        <button class="clear-btn" onclick="clearShopping()">Tout effacer</button>
+      </span>
     </div>
     ${Object.entries(grouped).map(([catKey, items]) => `
       <div class="shopping-group">
@@ -1119,16 +1240,26 @@ function fmtQty(x) {
   const whole = Math.floor(r);
   return r - whole === 0.5 ? (whole ? whole + '½' : '½') : String(whole);
 }
+// Nombre de personnes affiché : réglage par recette > taille du foyer > recette.
+function baseServings(r) {
+  return state.servings[r.id] || state.household || r.servings;
+}
 function servingsFactor(r) {
-  return (state.servings[r.id] || r.servings) / r.servings;
+  return baseServings(r) / r.servings;
 }
 function chgServings(rid, d) {
   const r = RECIPES.find(x => x.id === rid);
-  const nb = Math.min(12, Math.max(1, (state.servings[rid] || r.servings) + d));
-  if (nb === r.servings) delete state.servings[rid];
+  const nb = Math.min(12, Math.max(1, baseServings(r) + d));
+  if (nb === (state.household || r.servings)) delete state.servings[rid];
   else state.servings[rid] = nb;
   saveState();
   openRecipe(rid);
+}
+function chgHousehold(d) {
+  state.household = state.household ? Math.min(12, Math.max(1, state.household + d)) : 4;
+  state.householdAsked = true;
+  saveState();
+  openPremiumModal();
 }
 
 function matchingRecipes() {
@@ -1204,6 +1335,15 @@ function toggleFav(id) {
   render();
 }
 
+function renderSettingsSection() {
+  return `
+    <div class="settings-row">
+      <div><div class="settings-label">👨‍👩‍👧‍👦 Personnes par défaut</div><div class="settings-sub">Appliqué à toutes les recettes</div></div>
+      <span class="serv-ctrl"><button class="serv-btn" onclick="chgHousehold(-1)">−</button> <strong>${state.household || '—'}</strong> <button class="serv-btn" onclick="chgHousehold(1)">+</button></span>
+    </div>
+  `;
+}
+
 // ============ PREMIUM ============
 function openPremiumModal() {
   const modal = document.getElementById('modal');
@@ -1220,6 +1360,7 @@ function openPremiumModal() {
         Tu as la version complète
       </div>
       <div class="hint">Toutes les recettes sont débloquées. Merci de ton soutien !</div>
+      ${renderSettingsSection()}
       <button class="btn-ghost" onclick="resetPremium()">Réinitialiser (test)</button>
     `;
   } else {
@@ -1267,6 +1408,7 @@ function openPremiumModal() {
         </div>
         <div class="code-msg" id="codeMsg"></div>
       </div>
+      ${renderSettingsSection()}
     `;
   }
   document.getElementById('modalOverlay').classList.add('open');
@@ -1354,7 +1496,7 @@ function openRecipe(id) {
     <div class="modal-title">${r.name}</div>
     <div class="modal-meta">
       <span>⏱ ${r.time} min</span>
-      <span class="serv-ctrl"><button class="serv-btn" onclick="chgServings('${r.id}',-1)">−</button> 👥 ${state.servings[r.id] || r.servings} pers. <button class="serv-btn" onclick="chgServings('${r.id}',1)">+</button></span>
+      <span class="serv-ctrl"><button class="serv-btn" onclick="chgServings('${r.id}',-1)">−</button> 👥 ${baseServings(r)} pers. <button class="serv-btn" onclick="chgServings('${r.id}',1)">+</button></span>
       <span>📊 ${r.difficulty}</span>
     </div>
     <div class="recipe-tags" style="justify-content:center;margin-bottom:18px;">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
@@ -1384,11 +1526,14 @@ function openRecipe(id) {
   `;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  wakeLockWanted = true;
+  acquireWakeLock();
 }
 
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  releaseWakeLock();
 }
 
 // Basiques du placard : jamais ajoutés à la liste de courses.
@@ -1426,6 +1571,27 @@ function toggleShopDone(id) {
   render();
 }
 
+function shareShopping() {
+  const grouped = {};
+  state.shoppingList.forEach(id => {
+    const catKey = ING_CAT[id];
+    if (!catKey) return;
+    (grouped[catKey] = grouped[catKey] || []).push(id);
+  });
+  let text = '🛒 Liste de courses — Kit Cuisine\n';
+  Object.entries(grouped).forEach(([catKey, ids]) => {
+    text += `\n${INGREDIENTS[catKey].label} :\n`;
+    ids.forEach(id => {
+      const srcs = (state.shoppingSrc[id] || []).map(rid => RECIPES.find(x => x.id === rid)).filter(r => r && r.qty && r.qty[id]);
+      const qtys = srcs.map(r => scaleQty(r.qty[id], servingsFactor(r))).join(' + ');
+      text += `• ${ING_MAP[id].name}${qtys ? ' — ' + qtys : ''}\n`;
+    });
+  });
+  text += '\nhttps://design-effect.github.io/kit-cuisine/';
+  if (navigator.share) navigator.share({ text }).catch(() => {});
+  else navigator.clipboard.writeText(text).then(() => alert('Liste copiée !')).catch(() => {});
+}
+
 function clearShopping() {
   if (confirm('Vider la liste de courses ?')) {
     state.shoppingList.clear();
@@ -1435,6 +1601,20 @@ function clearShopping() {
     render();
   }
 }
+
+// Écran maintenu allumé pendant qu'une fiche recette est ouverte (Wake Lock).
+let wakeLock = null, wakeLockWanted = false;
+function acquireWakeLock() {
+  if (!('wakeLock' in navigator)) return;
+  navigator.wakeLock.request('screen').then(wl => { wakeLock = wl; }).catch(() => {});
+}
+function releaseWakeLock() {
+  wakeLockWanted = false;
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && wakeLockWanted) acquireWakeLock();
+});
 
 // ============ INIT ============
 loadState();
