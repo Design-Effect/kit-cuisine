@@ -196,6 +196,18 @@ main { padding: 16px 20px; }
   font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
 }
 .reveal-hint { text-align: center; font-size: 13px; color: var(--gray); margin: 4px 0 14px; font-weight: 600; }
+.reveal-missing { text-align: center; font-size: 13px; color: var(--gray); margin-bottom: 8px; }
+.reveal-complete { text-align: center; font-size: 14px; font-weight: 700; color: var(--secondary); margin-bottom: 10px; }
+.reveal-shop-btn {
+  display: block; margin: 0 auto 10px; padding: 10px 20px; border: none; border-radius: 20px;
+  background: var(--secondary); color: white; font-family: inherit;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.cat-count {
+  display: inline-block; background: var(--primary); color: white;
+  font-size: 10px; font-weight: 800; border-radius: 8px; padding: 1px 6px;
+  margin-left: 3px; vertical-align: middle;
+}
 
 .composer-info {
   text-align: center; margin-bottom: 18px; padding: 0 8px;
@@ -907,6 +919,11 @@ const RECIPES = [
    steps:['Fais sauter champignons dans beurre + ail.','Bats les œufs avec sel et poivre.','Verse dans la poêle avec les champignons.','Laisse prendre puis ajoute fromage râpé.','Plie et parsème de persil.']},
 ];
 
+// Fréquence de chaque ingrédient dans les recettes — sert à trier les chips
+// du composer (les plus utiles en premier).
+const ING_FREQ = {};
+RECIPES.forEach(r => r.ingredients.forEach(i => { ING_FREQ[i] = (ING_FREQ[i] || 0) + 1; }));
+
 // ============ STATE ============
 let state = {
   tab: 'discover',
@@ -1029,6 +1046,21 @@ function renderResults() {
       ${filtered.map(r => renderRecipeCard(r)).join('')}
     </div>
   `;
+}
+
+function renderSuggCard(r) {
+  const pct = Math.round(r.matches/r.usefulCount*100);
+  const locked = r.premium && !state.isPremium;
+  return `
+  <div class="sugg-card ${locked?'locked':''}" onclick="${locked?'openPremiumModal()':`openRecipe('${r.id}')`}">
+    <div class="sugg-emoji">${locked?'🔒':r.emoji}</div>
+    <div class="sugg-info">
+      <div class="sugg-name">${r.name}${locked?' <span class="sugg-lock-tag">PRO</span>':''}</div>
+      <div class="sugg-match">${r.matches}/${r.usefulCount} ingrédients · ${pct}%</div>
+      ${!locked && r.missing.length>0 && r.missing.length<=4 ? `<div class="sugg-missing">Manque : ${r.missing.map(m => ING_MAP[m]?.name||m).join(', ')}</div>` : ''}
+      <div class="match-bar"><div class="match-bar-fill ${pct>=80?'full':''}" style="width:${pct}%"></div></div>
+    </div>
+  </div>`;
 }
 
 // Ne re-rend que les résultats : le champ garde le focus clavier.
@@ -1170,6 +1202,10 @@ function renderComposer() {
     ${rev ? `
       <div class="reveal-caption" onclick="${revLocked?'openPremiumModal()':`openRecipe('${rev.id}')`}">${revLocked?'🔒':rev.emoji} <strong>${rev.name}</strong></div>
       <div class="reveal-sub">${rev.matches}/${rev.usefulCount} de tes ingrédients${revLocked?' · recette Premium':''}</div>
+      ${!revLocked ? (rev.missing.length ? `
+        <div class="reveal-missing">Il te manque : ${rev.missing.map(m => ING_MAP[m]?.name || m).join(', ')}</div>
+        <button class="reveal-shop-btn" onclick="addMissingToShopping('${rev.id}')">🛒 Ajouter à ma liste</button>
+      ` : `<div class="reveal-complete">✅ Tu as tout ce qu'il te faut !</div>`) : ''}
       ${sugg.length>1?`<button class="reveal-again" onclick="nextReveal()">🔄 Autre idée</button>`:''}
     ` : selected.length >= 2 ? `
       <button class="reveal-btn" onclick="revealDish()">✨ Révéler mon plat</button>
@@ -1182,13 +1218,15 @@ function renderComposer() {
     </div>
 
     <div class="cat-tabs">
-      ${cats.map(([k,c]) => `
-        <button class="cat-tab ${state.composerCategory===k?'active':''}" onclick="setCategory('${k}')">${c.label}</button>
-      `).join('')}
+      ${cats.map(([k,c]) => {
+        const n = c.items.filter(i => state.selectedIngredients.has(i.id)).length;
+        return `
+        <button class="cat-tab ${state.composerCategory===k?'active':''}" onclick="setCategory('${k}')">${c.label}${n?` <span class="cat-count">${n}</span>`:''}</button>
+      `;}).join('')}
     </div>
 
     <div class="ingredients-grid cat-${state.composerCategory}">
-      ${activeCat.items.map(i => `
+      ${[...activeCat.items].sort((a, b) => (ING_FREQ[b.id] || 0) - (ING_FREQ[a.id] || 0)).map(i => `
         <div class="ing-card ${state.selectedIngredients.has(i.id)?'selected':''}" onclick="toggleIngredient('${i.id}')">
           <div class="ing-check">✓</div>
           <div class="ing-circle"><span class="ing-emoji">${i.emoji}</span></div>
@@ -1197,25 +1235,16 @@ function renderComposer() {
       `).join('')}
     </div>
 
-    ${rev && sugg.length > 1 ? `
+    ${rev && sugg.length > 1 ? (() => {
+      const others = sugg.filter((s, i) => i !== state.revealIndex % sugg.length).slice(0, 8);
+      const ready = others.filter(r => r.missing.length === 0);
+      const toShop = others.filter(r => r.missing.length > 0);
+      return `
       <div class="suggestions">
-        <div class="section-title">✨ Autres idées proches</div>
-        ${sugg.filter((s, i) => i !== state.revealIndex % sugg.length).slice(0,8).map(r => {
-          const pct = Math.round(r.matches/r.usefulCount*100);
-          const locked = r.premium && !state.isPremium;
-          return `
-          <div class="sugg-card ${locked?'locked':''}" onclick="${locked?'openPremiumModal()':`openRecipe('${r.id}')`}">
-            <div class="sugg-emoji">${locked?'🔒':r.emoji}</div>
-            <div class="sugg-info">
-              <div class="sugg-name">${r.name}${locked?' <span class="sugg-lock-tag">PRO</span>':''}</div>
-              <div class="sugg-match">${r.matches}/${r.usefulCount} ingrédients · ${pct}%</div>
-              ${!locked && r.missing.length>0 && r.missing.length<=4 ? `<div class="sugg-missing">Manque : ${r.missing.map(m => ING_MAP[m]?.name||m).join(', ')}</div>` : ''}
-              <div class="match-bar"><div class="match-bar-fill ${pct>=80?'full':''}" style="width:${pct}%"></div></div>
-            </div>
-          </div>
-        `}).join('')}
+        ${ready.length ? `<div class="section-title">✅ Faisable maintenant</div>${ready.map(renderSuggCard).join('')}` : ''}
+        ${toShop.length ? `<div class="section-title">🛒 Avec quelques courses</div>${toShop.map(renderSuggCard).join('')}` : ''}
       </div>
-    ` : !rev && selected.length >= 2 ? `
+    `;})() : !rev && selected.length >= 2 ? `
       <div class="hint" style="margin-top:24px;">
         👨‍🍳 <strong>Tout est dans l'assiette ?</strong> Appuie sur « ✨ Révéler mon plat » quand tu as fini.
       </div>
