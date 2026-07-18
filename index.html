@@ -787,7 +787,12 @@ const PRICE_LABEL = '14<span class="price-cents">,90€</span>';
 
 // Codes de déverrouillage. Chaque code peut être unique ou multi-usage.
 // Exemples : code générique vente directe, codes ambassadrices, code testeur
-const UNLOCK_CODES = ['CUISINE2026', 'CHEF', 'BARAKA', 'FAMILLE'];
+// Empreintes SHA-256 des codes de déblocage (dépôt public — jamais de code en clair ici).
+const UNLOCK_HASHES = [
+  '0b25ef99de10d20095ff3fb7d152a64cba02feaa1c391220faa29ec278dafa0c',
+  'c1a18252445ebeda6f9973fe63ce687b8b84590df3bb407869b4d0e8a0aac344',
+  '244e5972e76898345e33da8c10d4ae4f98d18cdd6fab72d94b0720099a2c06ef',
+];
 
 // ============ PERSISTENCE ============
 const STORAGE_KEY = 'kitCuisine_v1_state';
@@ -1164,12 +1169,17 @@ function openPremiumModal() {
   document.body.style.overflow = 'hidden';
 }
 
-function tryUnlockCode() {
+async function sha256Hex(text) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function tryUnlockCode() {
   const input = document.getElementById('unlockCode');
   const msg = document.getElementById('codeMsg');
   const code = (input.value || '').trim().toUpperCase();
   if (!code) return;
-  if (UNLOCK_CODES.includes(code)) {
+  if (UNLOCK_HASHES.includes(await sha256Hex(code))) {
     state.isPremium = true;
     saveState();
     msg.className = 'code-msg success';
