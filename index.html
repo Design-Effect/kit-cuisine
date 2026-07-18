@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#C65D3E">
+<meta name="description" content="Qu'est-ce qu'on mange ? 35 recettes illustrées avec quantités précises, composeur par ingrédients et liste de courses intelligente. Fonctionne hors-ligne.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Kit Cuisine — Qu'est-ce qu'on mange ?">
+<meta property="og:description" content="Trouve ton prochain repas en 2 min : 35 recettes illustrées, quantités adaptées au nombre de personnes, liste de courses intelligente.">
+<meta property="og:url" content="https://design-effect.github.io/kit-cuisine/">
+<meta property="og:image" content="https://design-effect.github.io/kit-cuisine/img/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Kit Cuisine">
@@ -358,6 +367,11 @@ main { padding: 16px 20px; }
 .shop-item.done .shop-check::after { content: '✓'; }
 .shop-emoji { font-size: 22px; }
 .shop-qty { font-size: 12px; color: var(--gray); font-weight: 400; margin-top: 1px; }
+.shop-remove {
+  margin-left: auto; flex-shrink: 0; background: none; border: none;
+  color: var(--gray-light); font-size: 15px; cursor: pointer; padding: 4px 6px;
+  font-family: inherit; line-height: 1;
+}
 
 .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 
@@ -645,23 +659,23 @@ const RECIPES = [
    steps:['Fais revenir l\'oignon et l\'ail dans l\'huile.','Ajoute le poulet et les épices.','Couvre d\'eau et laisse mijoter 40 min.','Ajoute citron et olives 10 min avant la fin.','Parsème de persil et coriandre avant de servir.']},
 
   {id:'r3', img:'img/recipes/r3.jpg', name:'Couscous 7 légumes', emoji:'🍲', time:75, difficulty:'Moyen', servings:6, tags:['maghrébin','familial'], premium:true,
-   ingredients:['couscous','agneau','oignon','carotte','courgette','pois_chiches','tomate','ras_el_hanout','persil','huile_olive'],
-   qty:{couscous:'500 g de semoule moyenne', agneau:'800 g (épaule ou collier)', oignon:'2', carotte:'4, en tronçons', courgette:'3, en tronçons', pois_chiches:'250 g cuits, égouttés', tomate:'3, concassées', ras_el_hanout:'1 c. à s.', persil:'½ botte', huile_olive:'4 c. à s.'},
+   ingredients:['couscous','agneau','oignon','carotte','courgette','pois_chiches','tomate','ras_el_hanout','persil','huile_olive','sel'],
+   qty:{couscous:'500 g de semoule moyenne', agneau:'800 g (épaule ou collier)', oignon:'2', carotte:'4, en tronçons', courgette:'3, en tronçons', pois_chiches:'250 g cuits, égouttés', tomate:'3, concassées', ras_el_hanout:'1 c. à s.', persil:'½ botte', huile_olive:'4 c. à s.', sel:'1 c. à s. rase'},
    steps:['Fais revenir la viande avec l\'oignon.','Ajoute tomate, épices et eau.','Laisse mijoter 45 min.','Ajoute carottes puis courgettes 15 min avant la fin.','Prépare la semoule à part.','Sers semoule avec bouillon, légumes et viande.']},
 
   {id:'r4', img:'img/recipes/r4.jpg', name:'Pâtes bolognaise', emoji:'🍝', time:40, difficulty:'Facile', servings:4, tags:['italien','familial'],
-   ingredients:['pates','boeuf_hache','oignon','ail','tomate','sauce_tomate','huile_olive','basilic','parmesan'],
-   qty:{pates:'400 g de spaghetti', boeuf_hache:'500 g', oignon:'1 gros, ciselé', ail:'2 gousses', tomate:'2, concassées', sauce_tomate:'400 g', huile_olive:'2 c. à s.', basilic:'8 feuilles', parmesan:'60 g, râpé minute'},
+   ingredients:['pates','boeuf_hache','oignon','ail','tomate','sauce_tomate','huile_olive','basilic','parmesan','sel','poivre'],
+   qty:{pates:'400 g de spaghetti', boeuf_hache:'500 g', oignon:'1 gros, ciselé', ail:'2 gousses', tomate:'2, concassées', sauce_tomate:'400 g', huile_olive:'2 c. à s.', basilic:'8 feuilles', parmesan:'60 g, râpé minute', sel:'1 c. à c.', poivre:'4 tours de moulin'},
    steps:['Fais revenir oignon et ail.','Ajoute le bœuf haché et laisse dorer 5 min.','Incorpore tomate et sauce. Mijote 20 min.','Cuis les pâtes al dente.','Mélange et sers avec parmesan et basilic.']},
 
   {id:'r5', img:'img/recipes/r5.jpg', name:'Shakshuka', emoji:'🍳', time:25, difficulty:'Facile', servings:3, tags:['végé','rapide'],
-   ingredients:['oeufs','tomate','oignon','ail','poivron','cumin','paprika','huile_olive','persil'],
-   qty:{oeufs:'6', tomate:'6 bien mûres (ou concassées en boîte)', oignon:'1, émincé', ail:'2 gousses', poivron:'1 rouge, en lanières', cumin:'1 c. à c.', paprika:'1 c. à c. (fumé si possible)', huile_olive:'3 c. à s.', persil:'½ botte'},
+   ingredients:['oeufs','tomate','oignon','ail','poivron','cumin','paprika','huile_olive','persil','sel'],
+   qty:{oeufs:'6', tomate:'6 bien mûres (ou concassées en boîte)', oignon:'1, émincé', ail:'2 gousses', poivron:'1 rouge, en lanières', cumin:'1 c. à c.', paprika:'1 c. à c. (fumé si possible)', huile_olive:'3 c. à s.', persil:'½ botte', sel:'1 c. à c. rase'},
    steps:['Fais revenir oignon, ail, poivron.','Ajoute tomates concassées, cumin, paprika.','Laisse réduire 10 min.','Casse les œufs directement dans la sauce.','Couvre et cuis 5-7 min selon cuisson voulue. Parsème de persil.']},
 
   {id:'r6', img:'img/recipes/r6.jpg', name:'Soupe de lentilles corail', emoji:'🥣', time:35, difficulty:'Facile', servings:4, tags:['végé','réconfortant','économique'],
-   ingredients:['lentilles','oignon','ail','carotte','tomate','cumin','curry','huile_olive','citron'],
-   qty:{lentilles:'300 g de corail', oignon:'1', ail:'2 gousses', carotte:'2, en dés', tomate:'2 (ou concassées en boîte)', cumin:'1 c. à c.', curry:'1 c. à c.', huile_olive:'2 c. à s.', citron:'½, en filet'},
+   ingredients:['lentilles','oignon','ail','carotte','tomate','cumin','curry','huile_olive','citron','sel'],
+   qty:{lentilles:'300 g de corail', oignon:'1', ail:'2 gousses', carotte:'2, en dés', tomate:'2 (ou concassées en boîte)', cumin:'1 c. à c.', curry:'1 c. à c.', huile_olive:'2 c. à s.', citron:'½, en filet', sel:'1 c. à c.'},
    steps:['Fais revenir oignon, ail, carotte.','Ajoute tomate, lentilles, cumin et curry.','Couvre d\'eau (3× le volume des lentilles).','Mijote 20-25 min.','Mixe ou laisse en morceaux. Termine avec un filet de citron.']},
 
   {id:'r7', img:'img/recipes/r7.jpg', name:'Riz sauté au poulet', emoji:'🍚', time:30, difficulty:'Facile', servings:4, tags:['asiatique','rapide'],
@@ -670,8 +684,8 @@ const RECIPES = [
    steps:['Cuis le riz la veille (ou laisse refroidir).','Fais revenir poulet en dés avec ail et gingembre.','Ajoute oignon, carotte, maïs.','Pousse tout sur le côté, casse les œufs au centre.','Incorpore le riz et la sauce soja. Mélange 3 min.']},
 
   {id:'r8', img:'img/recipes/r8.jpg', name:'Curry de poulet', emoji:'🍛', time:45, difficulty:'Moyen', servings:4, tags:['indien','mijoté'], premium:true,
-   ingredients:['poulet','oignon','ail','gingembre','tomate','curry','cumin','yaourt','creme','riz','coriandre'],
-   qty:{poulet:'600 g de cuisses désossées', oignon:'2, émincés', ail:'3 gousses', gingembre:'30 g, râpé', tomate:'3 (ou concassées en boîte)', curry:'2 c. à s.', cumin:'1 c. à c.', yaourt:'1 nature (125 g)', creme:'10 cl', riz:'300 g de basmati', coriandre:'½ botte'},
+   ingredients:['poulet','oignon','ail','gingembre','tomate','curry','cumin','yaourt','creme','riz','coriandre','sel'],
+   qty:{poulet:'600 g de cuisses désossées', oignon:'2, émincés', ail:'3 gousses', gingembre:'30 g, râpé', tomate:'3 (ou concassées en boîte)', curry:'2 c. à s.', cumin:'1 c. à c.', yaourt:'1 nature (125 g)', creme:'10 cl', riz:'300 g de basmati', coriandre:'½ botte', sel:'1 c. à c.'},
    steps:['Fais revenir oignon, ail, gingembre.','Ajoute poulet en morceaux puis curry et cumin.','Verse tomate et yaourt. Mijote 25 min.','Termine avec un peu de crème.','Sers sur riz basmati, parsème de coriandre.']},
 
   {id:'r9', img:'img/recipes/r9.jpg', name:'Salade César au poulet', emoji:'🥗', time:20, difficulty:'Facile', servings:2, tags:['salade','rapide'],
@@ -695,13 +709,13 @@ const RECIPES = [
    steps:['Cuis les pommes de terre, écrase en purée avec beurre et lait.','Fais revenir oignon, ail, bœuf. Assaisonne.','Dans un plat : viande au fond, purée par-dessus.','Parsème de fromage râpé.','Enfourne 25 min à 200°C.']},
 
   {id:'r13', img:'img/recipes/r13.jpg', name:'Boulettes sauce tomate', emoji:'🍖', time:40, difficulty:'Facile', servings:4, tags:['familial','italien'],
-   ingredients:['boeuf_hache','oeufs','pain','ail','persil','oignon','sauce_tomate','huile_olive','basilic','parmesan'],
-   qty:{boeuf_hache:'600 g', oeufs:'1', pain:'1 tranche, trempée-essorée', ail:'2 gousses', persil:'½ botte', oignon:'1, ciselé fin', sauce_tomate:'500 g', huile_olive:'3 c. à s.', basilic:'6 feuilles', parmesan:'40 g'},
+   ingredients:['boeuf_hache','oeufs','pain','ail','persil','oignon','sauce_tomate','huile_olive','basilic','parmesan','sel'],
+   qty:{boeuf_hache:'600 g', oeufs:'1', pain:'1 tranche, trempée-essorée', ail:'2 gousses', persil:'½ botte', oignon:'1, ciselé fin', sauce_tomate:'500 g', huile_olive:'3 c. à s.', basilic:'6 feuilles', parmesan:'40 g', sel:'1 c. à c.'},
    steps:['Mélange viande, œuf, pain mouillé essoré, ail, persil.','Forme des boulettes.','Dore-les dans l\'huile.','Ajoute sauce tomate et basilic. Mijote 20 min.','Sers avec parmesan (et pâtes si tu veux).']},
 
   {id:'r14', img:'img/recipes/r14.jpg', name:'Wrap au poulet', emoji:'🌯', time:20, difficulty:'Facile', servings:2, tags:['rapide','emporter'],
-   ingredients:['tortilla','poulet','salade','tomate','avocat','mayo','moutarde','citron'],
-   qty:{tortilla:'2 grandes', poulet:'1 filet (~200 g)', salade:'2 poignées', tomate:'1', avocat:'1 bien mûr', mayo:'1 c. à s.', moutarde:'1 c. à c.', citron:'½ (le jus)'},
+   ingredients:['tortilla','poulet','salade','tomate','avocat','mayo','moutarde','citron','sel'],
+   qty:{tortilla:'2 grandes', poulet:'1 filet (~200 g)', salade:'2 poignées', tomate:'1', avocat:'1 bien mûr', mayo:'1 c. à s.', moutarde:'1 c. à c.', citron:'½ (le jus)', sel:'2 pincées'},
    steps:['Marine le poulet (citron, moutarde) puis grille-le.','Réchauffe la tortilla 20 sec.','Garnis : mayo, salade, tomate, avocat, poulet.','Plie fermement en wrap.','Coupe en deux en diagonale.']},
 
   {id:'r15', img:'img/recipes/r15.jpg', name:'Saumon citron thym', emoji:'🐟', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide','santé'],
@@ -720,8 +734,8 @@ const RECIPES = [
    steps:['Mixe pois chiches (trempés 12h), oignon, ail, herbes et épices.','Forme des boulettes.','Fais dorer à la poêle ou au four 15 min à 200°C.','Sers dans du pain pita avec salade et sauce yaourt-citron.','Déguste bien chaud.']},
 
   {id:'r18', img:'img/recipes/r18.jpg', name:'Dhal de lentilles', emoji:'🟡', time:35, difficulty:'Facile', servings:4, tags:['indien','végé','économique'], premium:true,
-   ingredients:['lentilles','oignon','ail','gingembre','tomate','curry','cumin','huile_olive','coriandre','riz'],
-   qty:{lentilles:'300 g de corail', oignon:'1, émincé', ail:'2 gousses', gingembre:'20 g, râpé', tomate:'2 (ou concassées en boîte)', curry:'1 c. à s.', cumin:'1 c. à c.', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'250 g de basmati'},
+   ingredients:['lentilles','oignon','ail','gingembre','tomate','curry','cumin','huile_olive','coriandre','riz','sel'],
+   qty:{lentilles:'300 g de corail', oignon:'1, émincé', ail:'2 gousses', gingembre:'20 g, râpé', tomate:'2 (ou concassées en boîte)', curry:'1 c. à s.', cumin:'1 c. à c.', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'250 g de basmati', sel:'1 c. à c.'},
    steps:['Fais revenir oignon, ail, gingembre.','Ajoute tomate, curry, cumin.','Verse lentilles + eau (3× le volume).','Mijote 25 min jusqu\'à fondant.','Sers avec riz, parsème de coriandre.']},
 
   {id:'r19', img:'img/recipes/r19.jpg', name:'Pizza maison express', emoji:'🍕', time:35, difficulty:'Moyen', servings:2, tags:['familial','italien'],
@@ -735,13 +749,13 @@ const RECIPES = [
    steps:['Réhydrate la semoule fine (ou boulgour).','Hache très finement persil (beaucoup), coriandre, oignon.','Coupe la tomate en petits dés.','Mélange avec la semoule.','Assaisonne citron, huile, sel. Laisse reposer 30 min.']},
 
   {id:'r21', img:'img/recipes/r21.jpg', name:'Bowl quinoa équilibré', emoji:'🥗', time:25, difficulty:'Facile', servings:2, tags:['santé','rapide'],
-   ingredients:['quinoa','avocat','tomate','mais','poulet','citron','huile_olive','persil'],
-   qty:{quinoa:'150 g, rincé', avocat:'1 bien mûr', tomate:'1 (ou une poignée de cerises)', mais:'100 g', poulet:'1 filet (~200 g)', citron:'½ (le jus)', huile_olive:'2 c. à s.', persil:'2 brins'},
+   ingredients:['quinoa','avocat','tomate','mais','poulet','citron','huile_olive','persil','sel'],
+   qty:{quinoa:'150 g, rincé', avocat:'1 bien mûr', tomate:'1 (ou une poignée de cerises)', mais:'100 g', poulet:'1 filet (~200 g)', citron:'½ (le jus)', huile_olive:'2 c. à s.', persil:'2 brins', sel:'2 pincées'},
    steps:['Cuis le quinoa.','Grille le poulet.','Coupe avocat et tomate en dés.','Dresse en bol : quinoa, puis toppings.','Arrose citron + huile, parsème de persil.']},
 
   {id:'r22', img:'img/recipes/r22.jpg', name:'Tacos mexicains', emoji:'🌮', time:30, difficulty:'Facile', servings:3, tags:['mexicain','familial'], premium:true,
-   ingredients:['tortilla','boeuf_hache','oignon','tomate','avocat','salade','cumin','paprika','citron','fromage'],
-   qty:{tortilla:'6 petites (2 par personne)', boeuf_hache:'400 g', oignon:'1', tomate:'2, en dés', avocat:'1 bien mûr', salade:'3 poignées, ciselée', cumin:'1 c. à c.', paprika:'1 c. à c.', citron:'1 (moitié pour le guacamole)', fromage:'60 g, râpé'},
+   ingredients:['tortilla','boeuf_hache','oignon','tomate','avocat','salade','cumin','paprika','citron','fromage','sel'],
+   qty:{tortilla:'6 petites (2 par personne)', boeuf_hache:'400 g', oignon:'1', tomate:'2, en dés', avocat:'1 bien mûr', salade:'3 poignées, ciselée', cumin:'1 c. à c.', paprika:'1 c. à c.', citron:'1 (moitié pour le guacamole)', fromage:'60 g, râpé', sel:'½ c. à c.'},
    steps:['Fais revenir oignon et bœuf avec cumin et paprika.','Réchauffe les tortillas.','Prépare guacamole : avocat écrasé, citron, sel.','Garnis : viande, salade, tomate, guacamole, fromage.','Plie en deux et déguste.']},
 
   {id:'r23', img:'img/recipes/r23.jpg', name:'Gratin de courgettes', emoji:'🥒', time:45, difficulty:'Facile', servings:4, tags:['gratin','végé'],
@@ -760,8 +774,8 @@ const RECIPES = [
    steps:['Fais revenir oignon et ail.','Ajoute champignons émincés, laisse dorer.','Incorpore le riz, toaste 1 min.','Verse bouillon chaud louche par louche, en remuant.','Après 18 min, termine avec beurre et parmesan. Parsème de persil.']},
 
   {id:'r26', img:'img/recipes/r26.jpg', name:'Chili con carne', emoji:'🌶️', time:50, difficulty:'Facile', servings:4, tags:['mexicain','mijoté','familial'], premium:true,
-   ingredients:['boeuf_hache','oignon','ail','tomate','poivron','pois_chiches','cumin','paprika','huile_olive','coriandre','riz'],
-   qty:{boeuf_hache:'500 g', oignon:'2', ail:'3 gousses', tomate:'400 g de concassées', poivron:'1 rouge', pois_chiches:'250 g cuits', cumin:'2 c. à c.', paprika:'2 c. à c. (fumé)', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'300 g'},
+   ingredients:['boeuf_hache','oignon','ail','tomate','poivron','pois_chiches','cumin','paprika','huile_olive','coriandre','riz','sel'],
+   qty:{boeuf_hache:'500 g', oignon:'2', ail:'3 gousses', tomate:'400 g de concassées', poivron:'1 rouge', pois_chiches:'250 g cuits', cumin:'2 c. à c.', paprika:'2 c. à c. (fumé)', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'300 g', sel:'1 c. à c.'},
    steps:['Fais revenir oignon et ail.','Ajoute bœuf haché, laisse dorer.','Incorpore tomate, poivron, pois chiches, cumin, paprika.','Mijote 30 min à couvert.','Sers avec riz et coriandre fraîche.']},
 
   {id:'r27', img:'img/recipes/r27.jpg', name:'Cabillaud provençal', emoji:'🐠', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
@@ -780,8 +794,8 @@ const RECIPES = [
    steps:['Évide les tomates, garde les chapeaux.','Mélange viande, riz cru, œuf, oignon, ail, persil.','Farcis les tomates.','Dépose dans un plat, arrose d\'huile.','Enfourne 45 min à 180°C.']},
 
   {id:'r30', img:'img/recipes/r30.jpg', name:'Galette de lentilles', emoji:'🥞', time:30, difficulty:'Facile', servings:4, tags:['végé','économique'],
-   ingredients:['lentilles','oignon','ail','oeufs','cumin','coriandre','huile_olive','citron','yaourt'],
-   qty:{lentilles:'250 g de corail', oignon:'1', ail:'2 gousses', oeufs:'2', cumin:'2 c. à c.', coriandre:'½ botte', huile_olive:'3 c. à s.', citron:'½ (le jus)', yaourt:'2 natures (sauce)'},
+   ingredients:['lentilles','oignon','ail','oeufs','cumin','coriandre','huile_olive','citron','yaourt','sel'],
+   qty:{lentilles:'250 g de corail', oignon:'1', ail:'2 gousses', oeufs:'2', cumin:'2 c. à c.', coriandre:'½ botte', huile_olive:'3 c. à s.', citron:'½ (le jus)', yaourt:'2 natures (sauce)', sel:'1 c. à c. rase'},
    steps:['Cuis les lentilles corail 15 min.','Mixe avec oignon, ail, œuf, cumin, coriandre.','Forme des galettes.','Dore à la poêle 3 min par face.','Sers avec un yaourt citronné.']},
 
   {id:'r31', img:'img/recipes/r31.jpg', name:'Crevettes ail-persil', emoji:'🦐', time:15, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
@@ -1075,6 +1089,7 @@ function renderShopping() {
             <div class="shop-check"></div>
             <span class="shop-emoji">${i.emoji}</span>
             <div><span>${i.name}</span>${qtys?`<div class="shop-qty">${qtys}</div>`:''}</div>
+            <button class="shop-remove" onclick="event.stopPropagation(); removeShopItem('${i.id}')" title="Retirer de la liste">✕</button>
           </div>
         `;}).join('')}
       </div>
@@ -1376,11 +1391,14 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 
+// Basiques du placard : jamais ajoutés à la liste de courses.
+const PANTRY_STAPLES = ['sel', 'poivre', 'huile_olive'];
+
 function addMissingToShopping(rid) {
   const r = RECIPES.find(x => x.id === rid);
   let added = 0;
   r.ingredients.forEach(id => {
-    if (!state.selectedIngredients.has(id)) {
+    if (!state.selectedIngredients.has(id) && !PANTRY_STAPLES.includes(id)) {
       state.shoppingList.add(id);
       if (!state.shoppingSrc[id]) state.shoppingSrc[id] = [];
       if (!state.shoppingSrc[id].includes(rid)) state.shoppingSrc[id].push(rid);
@@ -1390,6 +1408,14 @@ function addMissingToShopping(rid) {
   saveState();
   closeModal();
   state.tab = 'shopping';
+  render();
+}
+
+function removeShopItem(id) {
+  state.shoppingList.delete(id);
+  state.shoppingDone.delete(id);
+  delete state.shoppingSrc[id];
+  saveState();
   render();
 }
 
