@@ -75,7 +75,7 @@ Tant qu'une recette n'a pas de `img`, le placeholder SVG s'affiche automatiqueme
 ### r4 — Pâtes bolognaise
 > A deep cream pasta plate with twirled spaghetti coated in rich red beef bolognese sauce. Topped with shaved Parmesan and a single fresh basil leaf. Visible meat texture in the sauce. Warm Italian kitchen ambiance, wooden board, scattered Parmesan crumbs. [STYLE block above]
 
-### r5 — Shakshuka
+### r5 — Chakchouka
 > Cast iron skillet with bubbling tomato-pepper sauce, three perfectly poached eggs nestled in, runny yolks just visible, sprinkled with fresh parsley and a dusting of paprika. Crusty bread on the side. Rustic Middle Eastern atmosphere, wooden table. [STYLE block above]
 
 ### r6 — Soupe de lentilles corail
