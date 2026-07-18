@@ -85,7 +85,7 @@ Tant qu'une recette n'a pas de `img`, le placeholder SVG s'affiche automatiqueme
 > A wide bowl of golden fried rice with diced chicken, scrambled eggs, julienned carrots, and corn kernels. Glossy from soy sauce, garnished with chopped spring onions. Wooden chopsticks beside. Asian street food vibe, dark wooden background. [STYLE block above]
 
 ### r8 — Curry de poulet
-> Indian chicken curry with creamy orange sauce in a copper bowl. Tender chicken pieces visible, swirl of yogurt on top, fresh coriander, served beside fluffy basmati rice. Steam rising. Warm spice tones, dark moody background. [STYLE block above]
+> Indian chicken curry with creamy orange sauce in a copper bowl. Tender chicken pieces visible, swirl of yogurt on top, fresh coriander, fluffy basmati rice served in its own cream ceramic bowl beside the curry (never directly on the board). Steam rising. Warm spice tones, dark moody background. [STYLE block above]
 
 ### r9 — Salade César au poulet
 > Generous Caesar salad in a wide cream bowl: crisp romaine lettuce, golden grilled chicken slices, crunchy croutons, large Parmesan shavings, creamy dressing drizzle. Fresh black pepper on top. Bright fresh atmosphere, light wooden background. [STYLE block above]
