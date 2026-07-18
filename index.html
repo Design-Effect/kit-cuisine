@@ -7,7 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Kit Cuisine">
-<link rel="manifest" href='data:application/manifest+json,{"name":"Kit Cuisine","short_name":"Cuisine","description":"Trouve ton prochain repas en 2 min","start_url":"./","display":"standalone","orientation":"portrait","background_color":"%23FAF3E7","theme_color":"%23C65D3E","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Crect width=%22512%22 height=%22512%22 rx=%22110%22 fill=%22%23C65D3E%22/%3E%3Ccircle cx=%22256%22 cy=%22270%22 r=%22130%22 fill=%22%23FAF0DC%22/%3E%3Ccircle cx=%22256%22 cy=%22270%22 r=%22108%22 fill=%22%23fff%22/%3E%3Crect x=%22120%22 y=%22150%22 width=%2220%22 height=%22220%22 rx=%2210%22 fill=%22%23fff%22/%3E%3Crect x=%22372%22 y=%22150%22 width=%2220%22 height=%22220%22 rx=%2210%22 fill=%22%23fff%22/%3E%3C/svg%3E","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}'>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png">
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="%23C65D3E"/><circle cx="50" cy="55" r="26" fill="%23fff"/><rect x="22" y="28" width="4" height="44" rx="2" fill="%23fff"/><rect x="74" y="28" width="4" height="44" rx="2" fill="%23fff"/></svg>'>
 <title>Kit Cuisine — Qu'est-ce qu'on mange ?</title>
 <style>
@@ -1313,30 +1314,9 @@ document.querySelectorAll('.nav-btn').forEach(b => {
   b.addEventListener('click', () => setTab(b.dataset.tab));
 });
 
-// Service worker basique pour mise en cache offline.
-// NB : single-file => SW généré via Blob. Le scope étant limité, l'app reste
-// pleinement fonctionnelle même si l'enregistrement échoue (tout est inline).
+// Service worker (fichier séparé sw.js) : cache offline + app installable.
 if ('serviceWorker' in navigator) {
-  try {
-    const swCode = `
-      const CACHE = 'kit-cuisine-v1';
-      self.addEventListener('install', e => self.skipWaiting());
-      self.addEventListener('activate', e => self.clients.claim());
-      self.addEventListener('fetch', e => {
-        e.respondWith(
-          caches.match(e.request).then(r => r || fetch(e.request).then(resp => {
-            if (resp && resp.status === 200) {
-              const clone = resp.clone();
-              caches.open(CACHE).then(c => c.put(e.request, clone));
-            }
-            return resp;
-          }).catch(() => caches.match(e.request)))
-        );
-      });
-    `;
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-  } catch (e) { /* SW pas dispo — pas grave, l'app marche quand même */ }
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
 // Détecter si déjà installé (mode standalone)

@@ -1,0 +1,16 @@
+{
+  "name": "Kit Cuisine",
+  "short_name": "Cuisine",
+  "description": "Trouve ton prochain repas en 2 min",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF3E7",
+  "theme_color": "#C65D3E",
+  "icons": [
+    { "src": "img/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "img/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "img/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
