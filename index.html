@@ -294,6 +294,7 @@ main { padding: 16px 20px; }
 .modal-ing-list li.have { background: var(--secondary-light); color: var(--dark); font-weight: 600; }
 .modal-ing-list li.missing { color: var(--gray); }
 .modal-ing-list li .ing-ico { font-size: 18px; }
+.modal-ing-list li .ing-qty { margin-left: auto; text-align: right; color: var(--gray); font-size: 13px; flex-shrink: 0; max-width: 55%; }
 
 .modal-steps { list-style: none; counter-reset: step; }
 .modal-steps li {
@@ -627,142 +628,177 @@ Object.entries(INGREDIENTS).forEach(([catKey, cat]) => {
 const RECIPES = [
   {id:'r1', img:'img/recipes/r1.jpg', name:'Poulet rôti aux herbes', emoji:'🍗', time:50, difficulty:'Facile', servings:4, tags:['familial','four'],
    ingredients:['poulet','ail','thym','citron','huile_olive','sel','poivre','pomme_de_terre'],
+   qty:{poulet:'1 poulet fermier (~1,6 kg)', ail:'1 tête, en chemise', thym:'4 branches', citron:'1, coupé en deux', huile_olive:'3 c. à s.', sel:'1 c. à c. rase', poivre:'4 tours de moulin', pomme_de_terre:'800 g, en quartiers'},
    steps:['Préchauffe le four à 200°C.','Frotte le poulet avec l\'ail, le thym, l\'huile, le sel et le poivre.','Glisse le demi-citron dans la carcasse.','Dispose les pommes de terre autour.','Enfourne 45 min en arrosant à mi-cuisson.']},
 
   {id:'r2', img:'img/recipes/r2.jpg', name:'Tajine poulet olives citron', emoji:'🫒', time:60, difficulty:'Moyen', servings:4, tags:['maghrébin','mijoté'], premium:true,
    ingredients:['poulet','oignon','ail','citron','huile_olive','ras_el_hanout','persil','coriandre','sel'],
+   qty:{poulet:'4 cuisses (~1,2 kg)', oignon:'2, émincés fin', ail:'3 gousses', citron:'1 citron confit (ou 1 frais)', huile_olive:'4 c. à s.', ras_el_hanout:'2 c. à c.', persil:'½ botte', coriandre:'½ botte', sel:'1 c. à c.'},
    steps:['Fais revenir l\'oignon et l\'ail dans l\'huile.','Ajoute le poulet et les épices.','Couvre d\'eau et laisse mijoter 40 min.','Ajoute citron et olives 10 min avant la fin.','Parsème de persil et coriandre avant de servir.']},
 
   {id:'r3', img:'img/recipes/r3.jpg', name:'Couscous 7 légumes', emoji:'🍲', time:75, difficulty:'Moyen', servings:6, tags:['maghrébin','familial'], premium:true,
    ingredients:['couscous','agneau','oignon','carotte','courgette','pois_chiches','tomate','ras_el_hanout','persil','huile_olive'],
+   qty:{couscous:'500 g de semoule moyenne', agneau:'800 g (épaule ou collier)', oignon:'2', carotte:'4, en tronçons', courgette:'3, en tronçons', pois_chiches:'250 g cuits (1 boîte)', tomate:'3, concassées', ras_el_hanout:'1 c. à s.', persil:'½ botte', huile_olive:'4 c. à s.'},
    steps:['Fais revenir la viande avec l\'oignon.','Ajoute tomate, épices et eau.','Laisse mijoter 45 min.','Ajoute carottes puis courgettes 15 min avant la fin.','Prépare la semoule à part.','Sers semoule avec bouillon, légumes et viande.']},
 
   {id:'r4', img:'img/recipes/r4.jpg', name:'Pâtes bolognaise', emoji:'🍝', time:40, difficulty:'Facile', servings:4, tags:['italien','familial'],
    ingredients:['pates','boeuf_hache','oignon','ail','tomate','sauce_tomate','huile_olive','basilic','parmesan'],
+   qty:{pates:'400 g de spaghetti', boeuf_hache:'500 g', oignon:'1 gros, ciselé', ail:'2 gousses', tomate:'2, concassées', sauce_tomate:'400 g', huile_olive:'2 c. à s.', basilic:'8 feuilles', parmesan:'60 g, râpé minute'},
    steps:['Fais revenir oignon et ail.','Ajoute le bœuf haché et laisse dorer 5 min.','Incorpore tomate et sauce. Mijote 20 min.','Cuis les pâtes al dente.','Mélange et sers avec parmesan et basilic.']},
 
   {id:'r5', img:'img/recipes/r5.jpg', name:'Shakshuka', emoji:'🍳', time:25, difficulty:'Facile', servings:3, tags:['végé','rapide'],
    ingredients:['oeufs','tomate','oignon','ail','poivron','cumin','paprika','huile_olive','persil'],
+   qty:{oeufs:'6', tomate:'6 bien mûres (ou 800 g de concassées)', oignon:'1, émincé', ail:'2 gousses', poivron:'1 rouge, en lanières', cumin:'1 c. à c.', paprika:'1 c. à c. (fumé si possible)', huile_olive:'3 c. à s.', persil:'½ botte'},
    steps:['Fais revenir oignon, ail, poivron.','Ajoute tomates concassées, cumin, paprika.','Laisse réduire 10 min.','Casse les œufs directement dans la sauce.','Couvre et cuis 5-7 min selon cuisson voulue. Parsème de persil.']},
 
   {id:'r6', img:'img/recipes/r6.jpg', name:'Soupe de lentilles corail', emoji:'🥣', time:35, difficulty:'Facile', servings:4, tags:['végé','réconfortant','économique'],
    ingredients:['lentilles','oignon','ail','carotte','tomate','cumin','curry','huile_olive','citron'],
+   qty:{lentilles:'300 g de corail', oignon:'1', ail:'2 gousses', carotte:'2, en dés', tomate:'2 (ou 200 g de concassées)', cumin:'1 c. à c.', curry:'1 c. à c.', huile_olive:'2 c. à s.', citron:'½, en filet'},
    steps:['Fais revenir oignon, ail, carotte.','Ajoute tomate, lentilles, cumin et curry.','Couvre d\'eau (3× le volume des lentilles).','Mijote 20-25 min.','Mixe ou laisse en morceaux. Termine avec un filet de citron.']},
 
   {id:'r7', img:'img/recipes/r7.jpg', name:'Riz sauté au poulet', emoji:'🍚', time:30, difficulty:'Facile', servings:4, tags:['asiatique','rapide'],
    ingredients:['riz','poulet','oeufs','oignon','ail','gingembre','sauce_soja','huile_olive','carotte','mais'],
+   qty:{riz:'300 g, cuit et refroidi la veille', poulet:'400 g de filets, en dés', oeufs:'3', oignon:'1', ail:'2 gousses', gingembre:'20 g, râpé', sauce_soja:'4 c. à s.', huile_olive:'2 c. à s.', carotte:'1, en brunoise', mais:'150 g'},
    steps:['Cuis le riz la veille (ou laisse refroidir).','Fais revenir poulet en dés avec ail et gingembre.','Ajoute oignon, carotte, maïs.','Pousse tout sur le côté, casse les œufs au centre.','Incorpore le riz et la sauce soja. Mélange 3 min.']},
 
   {id:'r8', img:'img/recipes/r8.jpg', name:'Curry de poulet', emoji:'🍛', time:45, difficulty:'Moyen', servings:4, tags:['indien','mijoté'], premium:true,
    ingredients:['poulet','oignon','ail','gingembre','tomate','curry','cumin','yaourt','creme','riz','coriandre'],
+   qty:{poulet:'600 g de cuisses désossées', oignon:'2, émincés', ail:'3 gousses', gingembre:'30 g, râpé', tomate:'3 (ou 400 g de concassées)', curry:'2 c. à s.', cumin:'1 c. à c.', yaourt:'1 nature (125 g)', creme:'10 cl', riz:'300 g de basmati', coriandre:'½ botte'},
    steps:['Fais revenir oignon, ail, gingembre.','Ajoute poulet en morceaux puis curry et cumin.','Verse tomate et yaourt. Mijote 25 min.','Termine avec un peu de crème.','Sers sur riz basmati, parsème de coriandre.']},
 
   {id:'r9', img:'img/recipes/r9.jpg', name:'Salade César au poulet', emoji:'🥗', time:20, difficulty:'Facile', servings:2, tags:['salade','rapide'],
    ingredients:['poulet','salade','pain','parmesan','ail','mayo','moutarde','citron','huile_olive'],
+   qty:{poulet:'2 filets (~300 g)', salade:'1 romaine', pain:'2 tranches, en dés', parmesan:'40 g + quelques copeaux', ail:'1 gousse', mayo:'2 c. à s.', moutarde:'1 c. à c.', citron:'½ (le jus)', huile_olive:'2 c. à s.'},
    steps:['Grille le poulet. Coupe en lamelles.','Fais des croûtons : pain + huile + ail, au four 8 min.','Prépare la sauce : mayo + moutarde + citron + ail écrasé + parmesan.','Mélange salade, poulet, croûtons, sauce.','Parsème de copeaux de parmesan.']},
 
   {id:'r10', img:'img/recipes/r10.jpg', name:'Omelette aux légumes', emoji:'🥚', time:15, difficulty:'Facile', servings:2, tags:['rapide','économique'],
    ingredients:['oeufs','oignon','tomate','poivron','fromage','huile_olive','sel','poivre','persil'],
+   qty:{oeufs:'5', oignon:'½', tomate:'1, épépinée', poivron:'½', fromage:'40 g, râpé', huile_olive:'1 c. à s.', sel:'1 pincée', poivre:'2 tours de moulin', persil:'2 brins'},
    steps:['Bats les œufs avec sel et poivre.','Fais revenir oignon, poivron, tomate.','Verse les œufs. Laisse prendre à feu moyen.','Ajoute fromage râpé avant de plier.','Parsème de persil et sers.']},
 
   {id:'r11', img:'img/recipes/r11.jpg', name:'Ratatouille', emoji:'🍆', time:55, difficulty:'Facile', servings:4, tags:['végé','provençal'],
    ingredients:['aubergine','courgette','poivron','tomate','oignon','ail','huile_olive','thym','basilic','sel'],
+   qty:{aubergine:'2, en dés', courgette:'2, en dés', poivron:'2 (1 rouge + 1 jaune)', tomate:'4 bien mûres', oignon:'2', ail:'3 gousses', huile_olive:'6 c. à s.', thym:'3 branches', basilic:'10 feuilles', sel:'1 c. à c.'},
    steps:['Coupe tous les légumes en dés.','Fais revenir séparément : aubergine, courgette, poivron.','Dans une cocotte : oignon, ail, tomate.','Ajoute tous les légumes, sel, poivre, thym.','Mijote à feu doux 40 min. Termine avec basilic frais.']},
 
   {id:'r12', img:'img/recipes/r12.jpg', name:'Hachis parmentier', emoji:'🥔', time:60, difficulty:'Moyen', servings:4, tags:['familial','gratin'],
    ingredients:['pomme_de_terre','boeuf_hache','oignon','ail','beurre','lait','fromage','persil','sel','poivre'],
+   qty:{pomme_de_terre:'1 kg (bintje)', boeuf_hache:'500 g', oignon:'1 gros', ail:'2 gousses', beurre:'50 g', lait:'15 cl, chaud', fromage:'80 g, râpé', persil:'3 brins', sel:'1 c. à c.', poivre:'4 tours de moulin'},
    steps:['Cuis les pommes de terre, écrase en purée avec beurre et lait.','Fais revenir oignon, ail, bœuf. Assaisonne.','Dans un plat : viande au fond, purée par-dessus.','Parsème de fromage râpé.','Enfourne 25 min à 200°C.']},
 
   {id:'r13', img:'img/recipes/r13.jpg', name:'Boulettes sauce tomate', emoji:'🍖', time:40, difficulty:'Facile', servings:4, tags:['familial','italien'],
    ingredients:['boeuf_hache','oeufs','pain','ail','persil','oignon','sauce_tomate','huile_olive','basilic','parmesan'],
+   qty:{boeuf_hache:'600 g', oeufs:'1', pain:'1 tranche, trempée-essorée', ail:'2 gousses', persil:'½ botte', oignon:'1, ciselé fin', sauce_tomate:'500 g', huile_olive:'3 c. à s.', basilic:'6 feuilles', parmesan:'40 g'},
    steps:['Mélange viande, œuf, pain mouillé essoré, ail, persil.','Forme des boulettes.','Dore-les dans l\'huile.','Ajoute sauce tomate et basilic. Mijote 20 min.','Sers avec parmesan (et pâtes si tu veux).']},
 
   {id:'r14', img:'img/recipes/r14.jpg', name:'Wrap au poulet', emoji:'🌯', time:20, difficulty:'Facile', servings:2, tags:['rapide','emporter'],
    ingredients:['tortilla','poulet','salade','tomate','avocat','mayo','moutarde','citron'],
+   qty:{tortilla:'2 grandes', poulet:'1 filet (~200 g)', salade:'2 poignées', tomate:'1', avocat:'1 bien mûr', mayo:'1 c. à s.', moutarde:'1 c. à c.', citron:'½ (le jus)'},
    steps:['Marine le poulet (citron, moutarde) puis grille-le.','Réchauffe la tortilla 20 sec.','Garnis : mayo, salade, tomate, avocat, poulet.','Plie fermement en wrap.','Coupe en deux en diagonale.']},
 
   {id:'r15', img:'img/recipes/r15.jpg', name:'Saumon citron thym', emoji:'🐟', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide','santé'],
    ingredients:['saumon','citron','thym','huile_olive','ail','sel','poivre','courgette'],
+   qty:{saumon:'2 pavés de 150 g', citron:'1, en rondelles', thym:'2 branches', huile_olive:'2 c. à s.', ail:'1 gousse, émincée', sel:'2 pincées', poivre:'2 tours de moulin', courgette:'1, en rondelles'},
    steps:['Préchauffe le four à 200°C.','Dispose saumon et courgette en rondelles sur plaque.','Arrose d\'huile, ajoute citron, ail émincé, thym.','Sel, poivre.','Enfourne 15 min. Sers aussitôt.']},
 
   {id:'r16', img:'img/recipes/r16.jpg', name:'Houmous maison', emoji:'🧆', time:10, difficulty:'Facile', servings:4, tags:['mezze','végé','rapide'],
    ingredients:['pois_chiches','tahini','citron','ail','huile_olive','cumin','sel','paprika'],
+   qty:{pois_chiches:'250 g cuits (1 boîte), égouttés', tahini:'2 c. à s. bien pleines', citron:'1 (le jus)', ail:'1 gousse', huile_olive:'3 c. à s.', cumin:'½ c. à c.', sel:'½ c. à c.', paprika:'1 pincée, au dressage'},
    steps:['Mixe pois chiches, tahini, jus de citron, ail.','Ajoute huile au fur et à mesure.','Assaisonne cumin et sel.','Dresse dans un plat, creuse un puits au centre.','Arrose d\'huile, saupoudre de paprika.']},
 
   {id:'r17', img:'img/recipes/r17.jpg', name:'Falafels', emoji:'🧆', time:30, difficulty:'Moyen', servings:4, tags:['mezze','végé'], premium:true,
    ingredients:['pois_chiches','oignon','ail','persil','coriandre','cumin','sel','huile_olive','pain'],
+   qty:{pois_chiches:'300 g secs, trempés 12 h (jamais cuits)', oignon:'1', ail:'2 gousses', persil:'½ botte', coriandre:'½ botte', cumin:'2 c. à c.', sel:'1 c. à c.', huile_olive:'3 c. à s. (cuisson)', pain:'4 pains pita'},
    steps:['Mixe pois chiches (trempés 12h), oignon, ail, herbes et épices.','Forme des boulettes.','Fais dorer à la poêle ou au four 15 min à 200°C.','Sers dans du pain pita avec salade et sauce yaourt-citron.','Déguste bien chaud.']},
 
   {id:'r18', img:'img/recipes/r18.jpg', name:'Dhal de lentilles', emoji:'🟡', time:35, difficulty:'Facile', servings:4, tags:['indien','végé','économique'], premium:true,
    ingredients:['lentilles','oignon','ail','gingembre','tomate','curry','cumin','huile_olive','coriandre','riz'],
+   qty:{lentilles:'300 g de corail', oignon:'1, émincé', ail:'2 gousses', gingembre:'20 g, râpé', tomate:'2 (ou 200 g de concassées)', curry:'1 c. à s.', cumin:'1 c. à c.', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'250 g de basmati'},
    steps:['Fais revenir oignon, ail, gingembre.','Ajoute tomate, curry, cumin.','Verse lentilles + eau (3× le volume).','Mijote 25 min jusqu\'à fondant.','Sers avec riz, parsème de coriandre.']},
 
   {id:'r19', img:'img/recipes/r19.jpg', name:'Pizza maison express', emoji:'🍕', time:35, difficulty:'Moyen', servings:2, tags:['familial','italien'],
    ingredients:['pain','sauce_tomate','mozzarella','oignon','poivron','champignons','basilic','huile_olive'],
+   qty:{pain:'2 pains plats (type naan)', sauce_tomate:'150 g', mozzarella:'1 boule (125 g)', oignon:'½, émincé fin', poivron:'½, en lanières', champignons:'4, émincés', basilic:'6 feuilles', huile_olive:'1 filet'},
    steps:['Étale la pâte (ou utilise pain plat type naan).','Étale la sauce tomate.','Dispose mozzarella et garniture.','Enfourne 12 min à 220°C.','Parsème de basilic frais à la sortie.']},
 
   {id:'r20', img:'img/recipes/r20.jpg', name:'Tabbouleh libanais', emoji:'🌿', time:20, difficulty:'Facile', servings:4, tags:['libanais','salade','végé'],
    ingredients:['couscous','persil','coriandre','tomate','oignon','citron','huile_olive','sel'],
+   qty:{couscous:'100 g de semoule fine seulement', persil:'3 bottes, hachées très fin (la vraie star)', coriandre:'½ botte', tomate:'3, en petits dés', oignon:'1 petit (ou 4 cébettes)', citron:'2 (le jus)', huile_olive:'6 c. à s.', sel:'1 c. à c.'},
    steps:['Réhydrate la semoule fine (ou boulgour).','Hache très finement persil (beaucoup), coriandre, oignon.','Coupe la tomate en petits dés.','Mélange avec la semoule.','Assaisonne citron, huile, sel. Laisse reposer 30 min.']},
 
   {id:'r21', img:'img/recipes/r21.jpg', name:'Bowl quinoa équilibré', emoji:'🥗', time:25, difficulty:'Facile', servings:2, tags:['santé','rapide'],
    ingredients:['quinoa','avocat','tomate','mais','poulet','citron','huile_olive','persil'],
+   qty:{quinoa:'150 g, rincé', avocat:'1 bien mûr', tomate:'1 (ou 10 cerises)', mais:'100 g', poulet:'1 filet (~200 g)', citron:'½ (le jus)', huile_olive:'2 c. à s.', persil:'2 brins'},
    steps:['Cuis le quinoa.','Grille le poulet.','Coupe avocat et tomate en dés.','Dresse en bol : quinoa, puis toppings.','Arrose citron + huile, parsème de persil.']},
 
   {id:'r22', img:'img/recipes/r22.jpg', name:'Tacos mexicains', emoji:'🌮', time:30, difficulty:'Facile', servings:3, tags:['mexicain','familial'], premium:true,
    ingredients:['tortilla','boeuf_hache','oignon','tomate','avocat','salade','cumin','paprika','citron','fromage'],
+   qty:{tortilla:'6 petites (ou 3 grandes)', boeuf_hache:'400 g', oignon:'1', tomate:'2, en dés', avocat:'1 bien mûr', salade:'3 poignées, ciselée', cumin:'1 c. à c.', paprika:'1 c. à c.', citron:'1 (½ pour le guacamole)', fromage:'60 g, râpé'},
    steps:['Fais revenir oignon et bœuf avec cumin et paprika.','Réchauffe les tortillas.','Prépare guacamole : avocat écrasé, citron, sel.','Garnis : viande, salade, tomate, guacamole, fromage.','Plie en deux et déguste.']},
 
   {id:'r23', img:'img/recipes/r23.jpg', name:'Gratin de courgettes', emoji:'🥒', time:45, difficulty:'Facile', servings:4, tags:['gratin','végé'],
    ingredients:['courgette','oeufs','creme','fromage','ail','thym','sel','poivre','huile_olive'],
+   qty:{courgette:'4 (~800 g), en rondelles', oeufs:'3', creme:'20 cl', fromage:'100 g, râpé', ail:'2 gousses', thym:'2 branches', sel:'1 c. à c.', poivre:'4 tours de moulin', huile_olive:'1 c. à s.'},
    steps:['Coupe courgettes en rondelles, fais-les suer 10 min.','Bats œufs + crème + sel + poivre + ail.','Dans un plat : courgettes puis appareil.','Couvre de fromage râpé.','Enfourne 30 min à 180°C.']},
 
   {id:'r24', img:'img/recipes/r24.jpg', name:'Pad thaï au poulet', emoji:'🍜', time:30, difficulty:'Moyen', servings:3, tags:['asiatique','wok'], premium:true,
    ingredients:['pates','poulet','oeufs','ail','gingembre','sauce_soja','citron','miel','carotte','huile_olive'],
+   qty:{pates:'250 g de nouilles de riz', poulet:'300 g, en lamelles', oeufs:'2', ail:'2 gousses', gingembre:'20 g, râpé', sauce_soja:'4 c. à s.', citron:'1 (le jus)', miel:'1 c. à s.', carotte:'1, en julienne', huile_olive:'2 c. à s.'},
    steps:['Cuis les nouilles.','Dans un wok chaud : ail, gingembre, poulet en lamelles.','Ajoute carotte en julienne.','Pousse sur le côté, casse œufs au centre.','Ajoute nouilles + sauce (soja + citron + miel). Mélange vif 2 min.']},
 
   {id:'r25', img:'img/recipes/r25.jpg', name:'Risotto aux champignons', emoji:'🍄', time:40, difficulty:'Moyen', servings:3, tags:['italien','réconfortant'], premium:true,
    ingredients:['riz','champignons','oignon','ail','beurre','parmesan','huile_olive','thym','sel','persil'],
+   qty:{riz:'250 g (arborio)', champignons:'300 g, émincés', oignon:'1, ciselé fin', ail:'1 gousse', beurre:'40 g bien froid', parmesan:'60 g', huile_olive:'2 c. à s.', thym:'2 branches', sel:'à ajuster (bouillon déjà salé)', persil:'2 brins'},
    steps:['Fais revenir oignon et ail.','Ajoute champignons émincés, laisse dorer.','Incorpore le riz, toaste 1 min.','Verse bouillon chaud louche par louche, en remuant.','Après 18 min, termine avec beurre et parmesan. Parsème de persil.']},
 
   {id:'r26', img:'img/recipes/r26.jpg', name:'Chili con carne', emoji:'🌶️', time:50, difficulty:'Facile', servings:4, tags:['mexicain','mijoté','familial'], premium:true,
    ingredients:['boeuf_hache','oignon','ail','tomate','poivron','pois_chiches','cumin','paprika','huile_olive','coriandre','riz'],
+   qty:{boeuf_hache:'500 g', oignon:'2', ail:'3 gousses', tomate:'400 g de concassées', poivron:'1 rouge', pois_chiches:'250 g cuits', cumin:'2 c. à c.', paprika:'2 c. à c. (fumé)', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'300 g'},
    steps:['Fais revenir oignon et ail.','Ajoute bœuf haché, laisse dorer.','Incorpore tomate, poivron, pois chiches, cumin, paprika.','Mijote 30 min à couvert.','Sers avec riz et coriandre fraîche.']},
 
   {id:'r27', img:'img/recipes/r27.jpg', name:'Cabillaud provençal', emoji:'🐠', time:25, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
    ingredients:['cabillaud','tomate','oignon','ail','huile_olive','thym','basilic','citron','sel'],
+   qty:{cabillaud:'2 dos de 160 g', tomate:'3 bien mûres, concassées', oignon:'1', ail:'2 gousses', huile_olive:'3 c. à s.', thym:'2 branches', basilic:'6 feuilles', citron:'½ (le jus)', sel:'2 pincées'},
    steps:['Fais revenir oignon et ail.','Ajoute tomates concassées et thym.','Mijote 10 min.','Dépose les filets de cabillaud dans la sauce.','Couvre et cuis 8-10 min. Termine avec citron et basilic.']},
 
   {id:'r28', img:'img/recipes/r28.jpg', name:'Quinoa aux épinards', emoji:'🌾', time:25, difficulty:'Facile', servings:3, tags:['végé','santé'],
    ingredients:['quinoa','epinards','oignon','ail','huile_olive','citron','cumin','sel','pois_chiches'],
+   qty:{quinoa:'200 g, rincé', epinards:'200 g de pousses', oignon:'1', ail:'2 gousses', huile_olive:'2 c. à s.', citron:'½ (le jus)', cumin:'1 c. à c.', sel:'½ c. à c.', pois_chiches:'150 g cuits'},
    steps:['Fais revenir oignon et ail.','Ajoute quinoa et toaste 2 min.','Couvre d\'eau chaude (2× le volume). Cuis 15 min.','Incorpore épinards et pois chiches en fin de cuisson.','Assaisonne citron et cumin.']},
 
   {id:'r29', img:'img/recipes/r29.jpg', name:'Tomates farcies', emoji:'🍅', time:60, difficulty:'Moyen', servings:4, tags:['familial','four'],
    ingredients:['tomate','boeuf_hache','riz','oignon','ail','persil','oeufs','huile_olive','thym','sel'],
+   qty:{tomate:'8 grosses (type cœur de bœuf)', boeuf_hache:'500 g', riz:'80 g cru (il cuira dans le jus)', oignon:'1, ciselé', ail:'2 gousses', persil:'½ botte', oeufs:'1', huile_olive:'3 c. à s.', thym:'2 branches', sel:'1 c. à c.'},
    steps:['Évide les tomates, garde les chapeaux.','Mélange viande, riz cru, œuf, oignon, ail, persil.','Farcis les tomates.','Dépose dans un plat, arrose d\'huile.','Enfourne 45 min à 180°C.']},
 
   {id:'r30', img:'img/recipes/r30.jpg', name:'Galette de lentilles', emoji:'🥞', time:30, difficulty:'Facile', servings:4, tags:['végé','économique'],
    ingredients:['lentilles','oignon','ail','oeufs','cumin','coriandre','huile_olive','citron','yaourt'],
+   qty:{lentilles:'250 g de corail', oignon:'1', ail:'2 gousses', oeufs:'2', cumin:'2 c. à c.', coriandre:'½ botte', huile_olive:'3 c. à s.', citron:'½ (le jus)', yaourt:'2 natures (sauce)'},
    steps:['Cuis les lentilles corail 15 min.','Mixe avec oignon, ail, œuf, cumin, coriandre.','Forme des galettes.','Dore à la poêle 3 min par face.','Sers avec un yaourt citronné.']},
 
   {id:'r31', img:'img/recipes/r31.jpg', name:'Crevettes ail-persil', emoji:'🦐', time:15, difficulty:'Facile', servings:2, tags:['poisson','rapide'],
    ingredients:['crevettes','ail','persil','huile_olive','beurre','citron','pates','sel','poivre'],
+   qty:{crevettes:'300 g, décortiquées', ail:'4 gousses, émincées', persil:'½ botte', huile_olive:'2 c. à s.', beurre:'30 g', citron:'½ (le jus)', pates:'200 g de linguine', sel:'2 pincées', poivre:'2 tours de moulin'},
    steps:['Cuis les pâtes.','Dans une poêle : beurre + huile + ail émincé.','Ajoute les crevettes, fais-les sauter 3 min.','Déglace au citron, sale, poivre.','Mélange aux pâtes, parsème de persil.']},
 
   {id:'r32', img:'img/recipes/r32.jpg', name:'Dinde aux légumes rôtis', emoji:'🦃', time:50, difficulty:'Facile', servings:4, tags:['familial','four'],
    ingredients:['dinde','carotte','pomme_de_terre','oignon','ail','huile_olive','thym','sel','poivre'],
+   qty:{dinde:'600 g de filets, en gros cubes', carotte:'3, en tronçons', pomme_de_terre:'600 g, en quartiers', oignon:'2, en quartiers', ail:'6 gousses en chemise', huile_olive:'4 c. à s.', thym:'4 branches', sel:'1 c. à c.', poivre:'4 tours de moulin'},
    steps:['Préchauffe le four à 200°C.','Coupe les légumes en morceaux.','Dispose tout sur une plaque : dinde, légumes, ail entier.','Arrose d\'huile, sel, poivre, thym.','Enfourne 35-40 min en remuant à mi-cuisson.']},
 
   {id:'r33', img:'img/recipes/r33.jpg', name:'Brochettes de bœuf', emoji:'🍢', time:25, difficulty:'Facile', servings:3, tags:['grill','rapide'], premium:true,
    ingredients:['boeuf','poivron','oignon','huile_olive','paprika','cumin','ail','sel','citron'],
+   qty:{boeuf:'500 g de rumsteck, en cubes de 3 cm', poivron:'2, en carrés', oignon:'2, en pétales', huile_olive:'4 c. à s.', paprika:'2 c. à c.', cumin:'1 c. à c.', ail:'2 gousses', sel:'1 c. à c.', citron:'½ (le jus)'},
    steps:['Coupe bœuf et légumes en cubes.','Marine 30 min : huile, paprika, cumin, ail, citron, sel.','Enfile sur des brochettes.','Cuis 3-4 min par face sur plancha ou poêle.','Sers avec riz ou salade.']},
 
   {id:'r34', img:'img/recipes/r34.jpg', name:'Soupe minestrone', emoji:'🥫', time:40, difficulty:'Facile', servings:4, tags:['italien','végé','réconfortant'], premium:true,
    ingredients:['pates','tomate','carotte','courgette','oignon','ail','pois_chiches','huile_olive','basilic','parmesan','sel'],
+   qty:{pates:'150 g de petites pâtes', tomate:'400 g de concassées', carotte:'2, en dés', courgette:'1, en dés', oignon:'1', ail:'2 gousses', pois_chiches:'200 g cuits', huile_olive:'3 c. à s.', basilic:'8 feuilles', parmesan:'40 g', sel:'1 c. à c.'},
    steps:['Fais revenir oignon, ail, carotte.','Ajoute tomate, courgette, pois chiches.','Couvre d\'eau, mijote 20 min.','Ajoute pâtes en fin (8 min).','Sers avec basilic et parmesan.']},
 
   {id:'r35', img:'img/recipes/r35.jpg', name:'Omelette aux champignons', emoji:'🍳', time:15, difficulty:'Facile', servings:2, tags:['rapide','économique'],
    ingredients:['oeufs','champignons','ail','beurre','persil','fromage','sel','poivre'],
+   qty:{oeufs:'5', champignons:'150 g de Paris, émincés', ail:'1 gousse', beurre:'20 g', persil:'2 brins', fromage:'40 g, râpé', sel:'2 pincées', poivre:'2 tours de moulin'},
    steps:['Fais sauter champignons dans beurre + ail.','Bats les œufs avec sel et poivre.','Verse dans la poêle avec les champignons.','Laisse prendre puis ajoute fromage râpé.','Plie et parsème de persil.']},
 ];
 
@@ -1262,7 +1298,7 @@ function openRecipe(id) {
           const have = havePrefix && state.selectedIngredients.has(id);
           const cls = !havePrefix ? '' : (have ? 'have' : 'missing');
           const icon = !havePrefix ? '•' : (have ? '✓' : '○');
-          return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span></li>`;
+          return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span>${r.qty&&r.qty[id]?`<span class="ing-qty">${r.qty[id]}</span>`:''}</li>`;
         }).join('')}
       </ul>
     </div>
