@@ -1167,7 +1167,7 @@ function renderComposer() {
     </div>
     ${rev ? `
       <div class="reveal-caption" onclick="${revLocked?'openPremiumModal()':`openRecipe('${rev.id}')`}">${revLocked?'🔒':rev.emoji} <strong>${rev.name}</strong></div>
-      <div class="reveal-sub">${rev.matches}/${rev.ingredients.length} de tes ingrédients${revLocked?' · recette Premium':''}</div>
+      <div class="reveal-sub">${rev.matches}/${rev.usefulCount} de tes ingrédients${revLocked?' · recette Premium':''}</div>
       ${sugg.length>1?`<button class="reveal-again" onclick="nextReveal()">🔄 Autre idée</button>`:''}
     ` : selected.length >= 2 && sugg.length > 0 ? `
       <button class="reveal-btn" onclick="revealDish()">✨ Révéler mon plat</button>
@@ -1200,14 +1200,14 @@ function renderComposer() {
       <div class="suggestions">
         <div class="section-title">✨ Ce que tu peux faire</div>
         ${sugg.length > 0 ? sugg.slice(0,8).map(r => {
-          const pct = Math.round(r.matches/r.ingredients.length*100);
+          const pct = Math.round(r.matches/r.usefulCount*100);
           const locked = r.premium && !state.isPremium;
           return `
           <div class="sugg-card ${locked?'locked':''}" onclick="${locked?'openPremiumModal()':`openRecipe('${r.id}')`}">
             <div class="sugg-emoji">${locked?'🔒':r.emoji}</div>
             <div class="sugg-info">
               <div class="sugg-name">${r.name}${locked?' <span class="sugg-lock-tag">PRO</span>':''}</div>
-              <div class="sugg-match">${r.matches}/${r.ingredients.length} ingrédients · ${pct}%</div>
+              <div class="sugg-match">${r.matches}/${r.usefulCount} ingrédients · ${pct}%</div>
               ${!locked && r.missing.length>0 && r.missing.length<=4 ? `<div class="sugg-missing">Manque : ${r.missing.map(m => ING_MAP[m]?.name||m).join(', ')}</div>` : ''}
               <div class="match-bar"><div class="match-bar-fill ${pct>=80?'full':''}" style="width:${pct}%"></div></div>
             </div>
@@ -1328,17 +1328,30 @@ function chgHousehold(d) {
 
 function matchingRecipes() {
   if (state.selectedIngredients.size === 0) return [];
+  const PROTS = new Set(INGREDIENTS.proteines.items.map(i => i.id));
+  const selProteins = [...state.selectedIngredients].filter(id => PROTS.has(id));
   return RECIPES
     .map(r => {
-      const matches = r.ingredients.filter(i => state.selectedIngredients.has(i)).length;
-      const missing = r.ingredients.filter(i => !state.selectedIngredients.has(i));
-      return {...r, matches, missing};
+      // Les basiques du placard (sel, poivre, huile) ne comptent pas : ils
+      // matchent tout le monde et noient les vraies correspondances.
+      const useful = r.ingredients.filter(i => !PANTRY_STAPLES.includes(i));
+      const matches = useful.filter(i => state.selectedIngredients.has(i)).length;
+      const missing = useful.filter(i => !state.selectedIngredients.has(i));
+      return {...r, matches, missing, usefulCount: useful.length};
     })
-    .filter(r => r.matches >= 2)
+    .filter(r => {
+      // La protéine définit le plat : si l'utilisateur a choisi une protéine,
+      // exclure les plats dont la protéine est différente (bœuf ≠ saumon).
+      const rProteins = r.ingredients.filter(i => PROTS.has(i));
+      const protMatch = rProteins.some(p => state.selectedIngredients.has(p));
+      if (selProteins.length && rProteins.length && !protMatch) return false;
+      // Avoir la bonne protéine suffit à proposer le plat (avec le manquant).
+      return r.matches >= 2 || (protMatch && r.matches >= 1);
+    })
     .sort((a,b) => {
       // Score = (ratio of match) * match count, penalise beaucoup d'ingrédients manquants
-      const scoreA = (a.matches / a.ingredients.length) * a.matches;
-      const scoreB = (b.matches / b.ingredients.length) * b.matches;
+      const scoreA = (a.matches / a.usefulCount) * a.matches;
+      const scoreB = (b.matches / b.usefulCount) * b.matches;
       return scoreB - scoreA;
     });
 }
