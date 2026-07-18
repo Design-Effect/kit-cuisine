@@ -120,7 +120,7 @@ Tant qu'une recette n'a pas de `img`, le placeholder SVG s'affiche automatiqueme
 ### r19 — Pizza maison express
 > A homemade thin-crust pizza on a wooden board, melted mozzarella, fresh basil leaves, sautéed mushrooms and bell peppers, slightly charred edges. One slice slightly pulled away showing cheese stretch. Italian rustic atmosphere. [STYLE block above]
 
-### r20 — Tabbouleh libanais
+### r20 — Taboulé libanais
 > A vibrant Lebanese tabbouleh salad in a cream bowl, dominantly green from masses of finely chopped parsley, with red tomato cubes, white onion, soft bulgur wheat. Lemon wedge, drizzle of olive oil. Fresh Mediterranean atmosphere, linen background. [STYLE block above]
 
 ### r21 — Bowl quinoa équilibré
