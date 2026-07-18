@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const HTML_PATH = join(ROOT, 'kit-cuisine-v1.2.html');
+const HTML_PATH = join(ROOT, 'index.html');
 const MAX_BYTES = 100_000;
 
 const [srcArg, id] = process.argv.slice(2);
