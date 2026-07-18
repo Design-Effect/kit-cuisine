@@ -295,6 +295,13 @@ main { padding: 16px 20px; }
 .modal-ing-list li.missing { color: var(--gray); }
 .modal-ing-list li .ing-ico { font-size: 18px; }
 .modal-ing-list li .ing-qty { margin-left: auto; text-align: right; color: var(--gray); font-size: 13px; flex-shrink: 0; max-width: 55%; }
+.serv-ctrl { display: inline-flex; align-items: center; gap: 8px; }
+.serv-btn {
+  width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--gray-light);
+  background: var(--white); font-size: 16px; font-weight: 700; color: var(--primary);
+  cursor: pointer; line-height: 1; padding: 0;
+}
+.serv-btn:active { background: var(--primary-light); }
 
 .modal-steps { list-style: none; counter-reset: step; }
 .modal-steps li {
@@ -350,6 +357,7 @@ main { padding: 16px 20px; }
 .shop-item.done .shop-check { background: var(--secondary); border-color: var(--secondary); }
 .shop-item.done .shop-check::after { content: '✓'; }
 .shop-emoji { font-size: 22px; }
+.shop-qty { font-size: 12px; color: var(--gray); font-weight: 400; margin-top: 1px; }
 
 .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 
@@ -633,12 +641,12 @@ const RECIPES = [
 
   {id:'r2', img:'img/recipes/r2.jpg', name:'Tajine poulet olives citron', emoji:'🫒', time:60, difficulty:'Moyen', servings:4, tags:['maghrébin','mijoté'], premium:true,
    ingredients:['poulet','oignon','ail','citron','huile_olive','ras_el_hanout','persil','coriandre','sel'],
-   qty:{poulet:'4 cuisses (~1,2 kg)', oignon:'2, émincés fin', ail:'3 gousses', citron:'1 citron confit (ou 1 frais)', huile_olive:'4 c. à s.', ras_el_hanout:'2 c. à c.', persil:'½ botte', coriandre:'½ botte', sel:'1 c. à c.'},
+   qty:{poulet:'4 belles cuisses', oignon:'2, émincés fin', ail:'3 gousses', citron:'1 citron confit (ou frais)', huile_olive:'4 c. à s.', ras_el_hanout:'2 c. à c.', persil:'½ botte', coriandre:'½ botte', sel:'1 c. à c.'},
    steps:['Fais revenir l\'oignon et l\'ail dans l\'huile.','Ajoute le poulet et les épices.','Couvre d\'eau et laisse mijoter 40 min.','Ajoute citron et olives 10 min avant la fin.','Parsème de persil et coriandre avant de servir.']},
 
   {id:'r3', img:'img/recipes/r3.jpg', name:'Couscous 7 légumes', emoji:'🍲', time:75, difficulty:'Moyen', servings:6, tags:['maghrébin','familial'], premium:true,
    ingredients:['couscous','agneau','oignon','carotte','courgette','pois_chiches','tomate','ras_el_hanout','persil','huile_olive'],
-   qty:{couscous:'500 g de semoule moyenne', agneau:'800 g (épaule ou collier)', oignon:'2', carotte:'4, en tronçons', courgette:'3, en tronçons', pois_chiches:'250 g cuits (1 boîte)', tomate:'3, concassées', ras_el_hanout:'1 c. à s.', persil:'½ botte', huile_olive:'4 c. à s.'},
+   qty:{couscous:'500 g de semoule moyenne', agneau:'800 g (épaule ou collier)', oignon:'2', carotte:'4, en tronçons', courgette:'3, en tronçons', pois_chiches:'250 g cuits, égouttés', tomate:'3, concassées', ras_el_hanout:'1 c. à s.', persil:'½ botte', huile_olive:'4 c. à s.'},
    steps:['Fais revenir la viande avec l\'oignon.','Ajoute tomate, épices et eau.','Laisse mijoter 45 min.','Ajoute carottes puis courgettes 15 min avant la fin.','Prépare la semoule à part.','Sers semoule avec bouillon, légumes et viande.']},
 
   {id:'r4', img:'img/recipes/r4.jpg', name:'Pâtes bolognaise', emoji:'🍝', time:40, difficulty:'Facile', servings:4, tags:['italien','familial'],
@@ -648,12 +656,12 @@ const RECIPES = [
 
   {id:'r5', img:'img/recipes/r5.jpg', name:'Shakshuka', emoji:'🍳', time:25, difficulty:'Facile', servings:3, tags:['végé','rapide'],
    ingredients:['oeufs','tomate','oignon','ail','poivron','cumin','paprika','huile_olive','persil'],
-   qty:{oeufs:'6', tomate:'6 bien mûres (ou 800 g de concassées)', oignon:'1, émincé', ail:'2 gousses', poivron:'1 rouge, en lanières', cumin:'1 c. à c.', paprika:'1 c. à c. (fumé si possible)', huile_olive:'3 c. à s.', persil:'½ botte'},
+   qty:{oeufs:'6', tomate:'6 bien mûres (ou concassées en boîte)', oignon:'1, émincé', ail:'2 gousses', poivron:'1 rouge, en lanières', cumin:'1 c. à c.', paprika:'1 c. à c. (fumé si possible)', huile_olive:'3 c. à s.', persil:'½ botte'},
    steps:['Fais revenir oignon, ail, poivron.','Ajoute tomates concassées, cumin, paprika.','Laisse réduire 10 min.','Casse les œufs directement dans la sauce.','Couvre et cuis 5-7 min selon cuisson voulue. Parsème de persil.']},
 
   {id:'r6', img:'img/recipes/r6.jpg', name:'Soupe de lentilles corail', emoji:'🥣', time:35, difficulty:'Facile', servings:4, tags:['végé','réconfortant','économique'],
    ingredients:['lentilles','oignon','ail','carotte','tomate','cumin','curry','huile_olive','citron'],
-   qty:{lentilles:'300 g de corail', oignon:'1', ail:'2 gousses', carotte:'2, en dés', tomate:'2 (ou 200 g de concassées)', cumin:'1 c. à c.', curry:'1 c. à c.', huile_olive:'2 c. à s.', citron:'½, en filet'},
+   qty:{lentilles:'300 g de corail', oignon:'1', ail:'2 gousses', carotte:'2, en dés', tomate:'2 (ou concassées en boîte)', cumin:'1 c. à c.', curry:'1 c. à c.', huile_olive:'2 c. à s.', citron:'½, en filet'},
    steps:['Fais revenir oignon, ail, carotte.','Ajoute tomate, lentilles, cumin et curry.','Couvre d\'eau (3× le volume des lentilles).','Mijote 20-25 min.','Mixe ou laisse en morceaux. Termine avec un filet de citron.']},
 
   {id:'r7', img:'img/recipes/r7.jpg', name:'Riz sauté au poulet', emoji:'🍚', time:30, difficulty:'Facile', servings:4, tags:['asiatique','rapide'],
@@ -663,12 +671,12 @@ const RECIPES = [
 
   {id:'r8', img:'img/recipes/r8.jpg', name:'Curry de poulet', emoji:'🍛', time:45, difficulty:'Moyen', servings:4, tags:['indien','mijoté'], premium:true,
    ingredients:['poulet','oignon','ail','gingembre','tomate','curry','cumin','yaourt','creme','riz','coriandre'],
-   qty:{poulet:'600 g de cuisses désossées', oignon:'2, émincés', ail:'3 gousses', gingembre:'30 g, râpé', tomate:'3 (ou 400 g de concassées)', curry:'2 c. à s.', cumin:'1 c. à c.', yaourt:'1 nature (125 g)', creme:'10 cl', riz:'300 g de basmati', coriandre:'½ botte'},
+   qty:{poulet:'600 g de cuisses désossées', oignon:'2, émincés', ail:'3 gousses', gingembre:'30 g, râpé', tomate:'3 (ou concassées en boîte)', curry:'2 c. à s.', cumin:'1 c. à c.', yaourt:'1 nature (125 g)', creme:'10 cl', riz:'300 g de basmati', coriandre:'½ botte'},
    steps:['Fais revenir oignon, ail, gingembre.','Ajoute poulet en morceaux puis curry et cumin.','Verse tomate et yaourt. Mijote 25 min.','Termine avec un peu de crème.','Sers sur riz basmati, parsème de coriandre.']},
 
   {id:'r9', img:'img/recipes/r9.jpg', name:'Salade César au poulet', emoji:'🥗', time:20, difficulty:'Facile', servings:2, tags:['salade','rapide'],
    ingredients:['poulet','salade','pain','parmesan','ail','mayo','moutarde','citron','huile_olive'],
-   qty:{poulet:'2 filets (~300 g)', salade:'1 romaine', pain:'2 tranches, en dés', parmesan:'40 g + quelques copeaux', ail:'1 gousse', mayo:'2 c. à s.', moutarde:'1 c. à c.', citron:'½ (le jus)', huile_olive:'2 c. à s.'},
+   qty:{poulet:'2 filets (150 g chacun)', salade:'1 romaine', pain:'2 tranches, en dés', parmesan:'40 g + quelques copeaux', ail:'1 gousse', mayo:'2 c. à s.', moutarde:'1 c. à c.', citron:'½ (le jus)', huile_olive:'2 c. à s.'},
    steps:['Grille le poulet. Coupe en lamelles.','Fais des croûtons : pain + huile + ail, au four 8 min.','Prépare la sauce : mayo + moutarde + citron + ail écrasé + parmesan.','Mélange salade, poulet, croûtons, sauce.','Parsème de copeaux de parmesan.']},
 
   {id:'r10', img:'img/recipes/r10.jpg', name:'Omelette aux légumes', emoji:'🥚', time:15, difficulty:'Facile', servings:2, tags:['rapide','économique'],
@@ -678,7 +686,7 @@ const RECIPES = [
 
   {id:'r11', img:'img/recipes/r11.jpg', name:'Ratatouille', emoji:'🍆', time:55, difficulty:'Facile', servings:4, tags:['végé','provençal'],
    ingredients:['aubergine','courgette','poivron','tomate','oignon','ail','huile_olive','thym','basilic','sel'],
-   qty:{aubergine:'2, en dés', courgette:'2, en dés', poivron:'2 (1 rouge + 1 jaune)', tomate:'4 bien mûres', oignon:'2', ail:'3 gousses', huile_olive:'6 c. à s.', thym:'3 branches', basilic:'10 feuilles', sel:'1 c. à c.'},
+   qty:{aubergine:'2, en dés', courgette:'2, en dés', poivron:'2, couleurs mélangées', tomate:'4 bien mûres', oignon:'2', ail:'3 gousses', huile_olive:'6 c. à s.', thym:'3 branches', basilic:'10 feuilles', sel:'1 c. à c.'},
    steps:['Coupe tous les légumes en dés.','Fais revenir séparément : aubergine, courgette, poivron.','Dans une cocotte : oignon, ail, tomate.','Ajoute tous les légumes, sel, poivre, thym.','Mijote à feu doux 40 min. Termine avec basilic frais.']},
 
   {id:'r12', img:'img/recipes/r12.jpg', name:'Hachis parmentier', emoji:'🥔', time:60, difficulty:'Moyen', servings:4, tags:['familial','gratin'],
@@ -703,7 +711,7 @@ const RECIPES = [
 
   {id:'r16', img:'img/recipes/r16.jpg', name:'Houmous maison', emoji:'🧆', time:10, difficulty:'Facile', servings:4, tags:['mezze','végé','rapide'],
    ingredients:['pois_chiches','tahini','citron','ail','huile_olive','cumin','sel','paprika'],
-   qty:{pois_chiches:'250 g cuits (1 boîte), égouttés', tahini:'2 c. à s. bien pleines', citron:'1 (le jus)', ail:'1 gousse', huile_olive:'3 c. à s.', cumin:'½ c. à c.', sel:'½ c. à c.', paprika:'1 pincée, au dressage'},
+   qty:{pois_chiches:'250 g cuits, égouttés', tahini:'2 c. à s. bien pleines', citron:'1 (le jus)', ail:'1 gousse', huile_olive:'3 c. à s.', cumin:'½ c. à c.', sel:'½ c. à c.', paprika:'1 pincée, au dressage'},
    steps:['Mixe pois chiches, tahini, jus de citron, ail.','Ajoute huile au fur et à mesure.','Assaisonne cumin et sel.','Dresse dans un plat, creuse un puits au centre.','Arrose d\'huile, saupoudre de paprika.']},
 
   {id:'r17', img:'img/recipes/r17.jpg', name:'Falafels', emoji:'🧆', time:30, difficulty:'Moyen', servings:4, tags:['mezze','végé'], premium:true,
@@ -713,7 +721,7 @@ const RECIPES = [
 
   {id:'r18', img:'img/recipes/r18.jpg', name:'Dhal de lentilles', emoji:'🟡', time:35, difficulty:'Facile', servings:4, tags:['indien','végé','économique'], premium:true,
    ingredients:['lentilles','oignon','ail','gingembre','tomate','curry','cumin','huile_olive','coriandre','riz'],
-   qty:{lentilles:'300 g de corail', oignon:'1, émincé', ail:'2 gousses', gingembre:'20 g, râpé', tomate:'2 (ou 200 g de concassées)', curry:'1 c. à s.', cumin:'1 c. à c.', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'250 g de basmati'},
+   qty:{lentilles:'300 g de corail', oignon:'1, émincé', ail:'2 gousses', gingembre:'20 g, râpé', tomate:'2 (ou concassées en boîte)', curry:'1 c. à s.', cumin:'1 c. à c.', huile_olive:'2 c. à s.', coriandre:'½ botte', riz:'250 g de basmati'},
    steps:['Fais revenir oignon, ail, gingembre.','Ajoute tomate, curry, cumin.','Verse lentilles + eau (3× le volume).','Mijote 25 min jusqu\'à fondant.','Sers avec riz, parsème de coriandre.']},
 
   {id:'r19', img:'img/recipes/r19.jpg', name:'Pizza maison express', emoji:'🍕', time:35, difficulty:'Moyen', servings:2, tags:['familial','italien'],
@@ -723,22 +731,22 @@ const RECIPES = [
 
   {id:'r20', img:'img/recipes/r20.jpg', name:'Tabbouleh libanais', emoji:'🌿', time:20, difficulty:'Facile', servings:4, tags:['libanais','salade','végé'],
    ingredients:['couscous','persil','coriandre','tomate','oignon','citron','huile_olive','sel'],
-   qty:{couscous:'100 g de semoule fine seulement', persil:'3 bottes, hachées très fin (la vraie star)', coriandre:'½ botte', tomate:'3, en petits dés', oignon:'1 petit (ou 4 cébettes)', citron:'2 (le jus)', huile_olive:'6 c. à s.', sel:'1 c. à c.'},
+   qty:{couscous:'100 g de semoule fine seulement', persil:'3 bottes, hachées très fin (la vraie star)', coriandre:'½ botte', tomate:'3, en petits dés', oignon:'1 petit (ou cébettes)', citron:'2 (le jus)', huile_olive:'6 c. à s.', sel:'1 c. à c.'},
    steps:['Réhydrate la semoule fine (ou boulgour).','Hache très finement persil (beaucoup), coriandre, oignon.','Coupe la tomate en petits dés.','Mélange avec la semoule.','Assaisonne citron, huile, sel. Laisse reposer 30 min.']},
 
   {id:'r21', img:'img/recipes/r21.jpg', name:'Bowl quinoa équilibré', emoji:'🥗', time:25, difficulty:'Facile', servings:2, tags:['santé','rapide'],
    ingredients:['quinoa','avocat','tomate','mais','poulet','citron','huile_olive','persil'],
-   qty:{quinoa:'150 g, rincé', avocat:'1 bien mûr', tomate:'1 (ou 10 cerises)', mais:'100 g', poulet:'1 filet (~200 g)', citron:'½ (le jus)', huile_olive:'2 c. à s.', persil:'2 brins'},
+   qty:{quinoa:'150 g, rincé', avocat:'1 bien mûr', tomate:'1 (ou une poignée de cerises)', mais:'100 g', poulet:'1 filet (~200 g)', citron:'½ (le jus)', huile_olive:'2 c. à s.', persil:'2 brins'},
    steps:['Cuis le quinoa.','Grille le poulet.','Coupe avocat et tomate en dés.','Dresse en bol : quinoa, puis toppings.','Arrose citron + huile, parsème de persil.']},
 
   {id:'r22', img:'img/recipes/r22.jpg', name:'Tacos mexicains', emoji:'🌮', time:30, difficulty:'Facile', servings:3, tags:['mexicain','familial'], premium:true,
    ingredients:['tortilla','boeuf_hache','oignon','tomate','avocat','salade','cumin','paprika','citron','fromage'],
-   qty:{tortilla:'6 petites (ou 3 grandes)', boeuf_hache:'400 g', oignon:'1', tomate:'2, en dés', avocat:'1 bien mûr', salade:'3 poignées, ciselée', cumin:'1 c. à c.', paprika:'1 c. à c.', citron:'1 (½ pour le guacamole)', fromage:'60 g, râpé'},
+   qty:{tortilla:'6 petites (2 par personne)', boeuf_hache:'400 g', oignon:'1', tomate:'2, en dés', avocat:'1 bien mûr', salade:'3 poignées, ciselée', cumin:'1 c. à c.', paprika:'1 c. à c.', citron:'1 (moitié pour le guacamole)', fromage:'60 g, râpé'},
    steps:['Fais revenir oignon et bœuf avec cumin et paprika.','Réchauffe les tortillas.','Prépare guacamole : avocat écrasé, citron, sel.','Garnis : viande, salade, tomate, guacamole, fromage.','Plie en deux et déguste.']},
 
   {id:'r23', img:'img/recipes/r23.jpg', name:'Gratin de courgettes', emoji:'🥒', time:45, difficulty:'Facile', servings:4, tags:['gratin','végé'],
    ingredients:['courgette','oeufs','creme','fromage','ail','thym','sel','poivre','huile_olive'],
-   qty:{courgette:'4 (~800 g), en rondelles', oeufs:'3', creme:'20 cl', fromage:'100 g, râpé', ail:'2 gousses', thym:'2 branches', sel:'1 c. à c.', poivre:'4 tours de moulin', huile_olive:'1 c. à s.'},
+   qty:{courgette:'4 (env. 200 g chacune), en rondelles', oeufs:'3', creme:'20 cl', fromage:'100 g, râpé', ail:'2 gousses', thym:'2 branches', sel:'1 c. à c.', poivre:'4 tours de moulin', huile_olive:'1 c. à s.'},
    steps:['Coupe courgettes en rondelles, fais-les suer 10 min.','Bats œufs + crème + sel + poivre + ail.','Dans un plat : courgettes puis appareil.','Couvre de fromage râpé.','Enfourne 30 min à 180°C.']},
 
   {id:'r24', img:'img/recipes/r24.jpg', name:'Pad thaï au poulet', emoji:'🍜', time:30, difficulty:'Moyen', servings:3, tags:['asiatique','wok'], premium:true,
@@ -810,6 +818,8 @@ let state = {
   favorites: new Set(),
   shoppingList: new Set(),
   shoppingDone: new Set(),
+  shoppingSrc: {},
+  servings: {},
   recipeFilter: 'all',
   isPremium: false,
   installDismissed: false,
@@ -838,6 +848,8 @@ function saveState() {
       favorites: [...state.favorites],
       shoppingList: [...state.shoppingList],
       shoppingDone: [...state.shoppingDone],
+      shoppingSrc: state.shoppingSrc,
+      servings: state.servings,
       isPremium: state.isPremium,
       installDismissed: state.installDismissed,
     }));
@@ -851,6 +863,8 @@ function loadState() {
     state.favorites = new Set(s.favorites || []);
     state.shoppingList = new Set(s.shoppingList || []);
     state.shoppingDone = new Set(s.shoppingDone || []);
+    state.shoppingSrc = s.shoppingSrc || {};
+    state.servings = s.servings || {};
     state.isPremium = !!s.isPremium;
     state.installDismissed = !!s.installDismissed;
   } catch (e) { /* corrompu — on repart de zéro */ }
@@ -1050,19 +1064,56 @@ function renderShopping() {
     ${Object.entries(grouped).map(([catKey, items]) => `
       <div class="shopping-group">
         <h3>${INGREDIENTS[catKey].label}</h3>
-        ${items.map(i => `
+        ${items.map(i => {
+          const srcs = (state.shoppingSrc[i.id] || []).map(rid => RECIPES.find(x => x.id === rid)).filter(r => r && r.qty && r.qty[i.id]);
+          const qtys = srcs.map(r => {
+            const q = scaleQty(r.qty[i.id], servingsFactor(r));
+            return srcs.length > 1 ? `${q} (${r.name})` : q;
+          }).join(' + ');
+          return `
           <div class="shop-item ${state.shoppingDone.has(i.id)?'done':''}" onclick="toggleShopDone('${i.id}')">
             <div class="shop-check"></div>
             <span class="shop-emoji">${i.emoji}</span>
-            <span>${i.name}</span>
+            <div><span>${i.name}</span>${qtys?`<div class="shop-qty">${qtys}</div>`:''}</div>
           </div>
-        `).join('')}
+        `;}).join('')}
       </div>
     `).join('')}
   `;
 }
 
 // ============ LOGIC ============
+// Mise à l'échelle des quantités : seul le PREMIER nombre de la chaîne est
+// multiplié (jamais les durées, tailles de découpe ou poids unitaires).
+function scaleQty(q, f) {
+  if (f === 1) return q;
+  const m = q.match(/^([0-9]+(?:,[0-9]+)?|[½¼¾])/);
+  if (!m) return q;
+  const raw = m[1];
+  const val = raw === '½' ? 0.5 : raw === '¼' ? 0.25 : raw === '¾' ? 0.75 : parseFloat(raw.replace(',', '.'));
+  return fmtQty(val * f) + q.slice(raw.length);
+}
+function fmtQty(x) {
+  if (x >= 10) return String(Math.round(x));
+  const r = Math.round(x * 4) / 4;
+  const whole = Math.floor(r);
+  const frac = r - whole;
+  const fs = frac === 0.5 ? '½' : frac === 0.25 ? '¼' : frac === 0.75 ? '¾' : '';
+  if (fs) return whole ? whole + fs : fs;
+  return String(r).replace('.', ',');
+}
+function servingsFactor(r) {
+  return (state.servings[r.id] || r.servings) / r.servings;
+}
+function chgServings(rid, d) {
+  const r = RECIPES.find(x => x.id === rid);
+  const nb = Math.min(12, Math.max(1, (state.servings[rid] || r.servings) + d));
+  if (nb === r.servings) delete state.servings[rid];
+  else state.servings[rid] = nb;
+  saveState();
+  openRecipe(rid);
+}
+
 function matchingRecipes() {
   if (state.selectedIngredients.size === 0) return [];
   return RECIPES
@@ -1275,6 +1326,7 @@ function openRecipe(id) {
   if (!r) return;
   const modal = document.getElementById('modal');
   const havePrefix = state.selectedIngredients.size > 0;
+  const f = servingsFactor(r);
   modal.innerHTML = `
     <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-hero">
@@ -1285,7 +1337,7 @@ function openRecipe(id) {
     <div class="modal-title">${r.name}</div>
     <div class="modal-meta">
       <span>⏱ ${r.time} min</span>
-      <span>👥 ${r.servings} pers.</span>
+      <span class="serv-ctrl"><button class="serv-btn" onclick="chgServings('${r.id}',-1)">−</button> 👥 ${state.servings[r.id] || r.servings} pers. <button class="serv-btn" onclick="chgServings('${r.id}',1)">+</button></span>
       <span>📊 ${r.difficulty}</span>
     </div>
     <div class="recipe-tags" style="justify-content:center;margin-bottom:18px;">${r.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
@@ -1298,7 +1350,7 @@ function openRecipe(id) {
           const have = havePrefix && state.selectedIngredients.has(id);
           const cls = !havePrefix ? '' : (have ? 'have' : 'missing');
           const icon = !havePrefix ? '•' : (have ? '✓' : '○');
-          return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span>${r.qty&&r.qty[id]?`<span class="ing-qty">${r.qty[id]}</span>`:''}</li>`;
+          return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span>${r.qty&&r.qty[id]?`<span class="ing-qty">${scaleQty(r.qty[id],f)}</span>`:''}</li>`;
         }).join('')}
       </ul>
     </div>
@@ -1328,6 +1380,8 @@ function addMissingToShopping(rid) {
   r.ingredients.forEach(id => {
     if (!state.selectedIngredients.has(id)) {
       state.shoppingList.add(id);
+      if (!state.shoppingSrc[id]) state.shoppingSrc[id] = [];
+      if (!state.shoppingSrc[id].includes(rid)) state.shoppingSrc[id].push(rid);
       added++;
     }
   });
@@ -1348,6 +1402,7 @@ function clearShopping() {
   if (confirm('Vider la liste de courses ?')) {
     state.shoppingList.clear();
     state.shoppingDone.clear();
+    state.shoppingSrc = {};
     saveState();
     render();
   }
