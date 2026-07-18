@@ -1091,16 +1091,18 @@ function scaleQty(q, f) {
   if (!m) return q;
   const raw = m[1];
   const val = raw === '½' ? 0.5 : raw === '¼' ? 0.25 : raw === '¾' ? 0.75 : parseFloat(raw.replace(',', '.'));
-  return fmtQty(val * f) + q.slice(raw.length);
+  let res = fmtQty(val * f) + q.slice(raw.length);
+  const g = res.match(/^(\d{4,}) g\b/);
+  if (g) res = String(Math.round(parseInt(g[1], 10) / 100) / 10).replace('.', ',') + ' kg' + res.slice(g[0].length);
+  return res;
 }
+// Arrondi à la demie (jamais de ¼ : illisible en cuisine), minimum ½.
 function fmtQty(x) {
   if (x >= 10) return String(Math.round(x));
-  const r = Math.round(x * 4) / 4;
+  const r = Math.round(x * 2) / 2;
+  if (r === 0) return '½';
   const whole = Math.floor(r);
-  const frac = r - whole;
-  const fs = frac === 0.5 ? '½' : frac === 0.25 ? '¼' : frac === 0.75 ? '¾' : '';
-  if (fs) return whole ? whole + fs : fs;
-  return String(r).replace('.', ',');
+  return r - whole === 0.5 ? (whole ? whole + '½' : '½') : String(whole);
 }
 function servingsFactor(r) {
   return (state.servings[r.id] || r.servings) / r.servings;
