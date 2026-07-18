@@ -920,6 +920,7 @@ let state = {
   householdAsked: false,
   search: '',
   revealIndex: null,
+  revealFailed: false,
   recipeFilter: 'all',
   isPremium: false,
   installDismissed: false,
@@ -1169,10 +1170,9 @@ function renderComposer() {
       <div class="reveal-caption" onclick="${revLocked?'openPremiumModal()':`openRecipe('${rev.id}')`}">${revLocked?'🔒':rev.emoji} <strong>${rev.name}</strong></div>
       <div class="reveal-sub">${rev.matches}/${rev.usefulCount} de tes ingrédients${revLocked?' · recette Premium':''}</div>
       ${sugg.length>1?`<button class="reveal-again" onclick="nextReveal()">🔄 Autre idée</button>`:''}
-    ` : selected.length >= 2 && sugg.length > 0 ? `
-      <button class="reveal-btn" onclick="revealDish()">✨ Révéler mon plat</button>
     ` : selected.length >= 2 ? `
-      <div class="reveal-hint">👨‍🍳 Combinaison audacieuse, chef ! Ajoute ou retire un ingrédient…</div>
+      <button class="reveal-btn" onclick="revealDish()">✨ Révéler mon plat</button>
+      ${state.revealFailed?`<div class="reveal-hint">👨‍🍳 Combinaison audacieuse, chef ! Ajoute ou retire un ingrédient…</div>`:''}
     ` : ''}
 
     <div class="composer-info">
@@ -1196,10 +1196,10 @@ function renderComposer() {
       `).join('')}
     </div>
 
-    ${selected.length >= 2 ? `
+    ${rev && sugg.length > 1 ? `
       <div class="suggestions">
-        <div class="section-title">✨ Ce que tu peux faire</div>
-        ${sugg.length > 0 ? sugg.slice(0,8).map(r => {
+        <div class="section-title">✨ Autres idées proches</div>
+        ${sugg.filter((s, i) => i !== state.revealIndex % sugg.length).slice(0,8).map(r => {
           const pct = Math.round(r.matches/r.usefulCount*100);
           const locked = r.premium && !state.isPremium;
           return `
@@ -1212,15 +1212,19 @@ function renderComposer() {
               <div class="match-bar"><div class="match-bar-fill ${pct>=80?'full':''}" style="width:${pct}%"></div></div>
             </div>
           </div>
-        `}).join('') : `<div class="empty"><div class="empty-emoji">🤔</div><div class="empty-text">Rien ne matche exactement.<br>Essaie d'ajouter ou retirer un ingrédient.</div></div>`}
+        `}).join('')}
+      </div>
+    ` : !rev && selected.length >= 2 ? `
+      <div class="hint" style="margin-top:24px;">
+        👨‍🍳 <strong>Tout est dans l'assiette ?</strong> Appuie sur « ✨ Révéler mon plat » quand tu as fini.
       </div>
     ` : selected.length === 1 ? `
       <div class="hint" style="margin-top:24px;">
-        <strong>Continue !</strong> Ajoute au moins 2 ingrédients pour voir des idées de recettes.
+        <strong>Continue !</strong> Ajoute au moins 2 ingrédients, puis révèle ton plat.
       </div>
     ` : `
       <div class="hint" style="margin-top:24px;">
-        💡 <strong>Astuce :</strong> coche ce que tu as dans ton frigo/placard. Je te montre les recettes possibles avec une barre qui indique le taux de correspondance.
+        💡 <strong>Astuce :</strong> coche tout ce que tu as dans ton frigo et ton placard, puis appuie sur « ✨ Révéler mon plat » pour découvrir ce que tu peux cuisiner.
       </div>
     `}
   `;
@@ -1398,21 +1402,28 @@ function toggleIngredient(id) {
   if (state.selectedIngredients.has(id)) state.selectedIngredients.delete(id);
   else state.selectedIngredients.add(id);
   state.revealIndex = null;
+  state.revealFailed = false;
   render();
 }
 
 function clearComposer() {
   state.selectedIngredients.clear();
   state.revealIndex = null;
+  state.revealFailed = false;
   render();
 }
 
 // Révélation ✨ : l'assiette vibre, flash, et le plat le mieux assorti apparaît.
+// Sans correspondance : la vibration débouche sur le message « audacieuse ».
 function revealDish() {
   const plate = document.getElementById('plate');
   if (!plate) return;
   plate.classList.add('shaking');
-  setTimeout(() => { state.revealIndex = 0; render(); }, 500);
+  setTimeout(() => {
+    state.revealFailed = matchingRecipes().length === 0;
+    state.revealIndex = state.revealFailed ? null : 0;
+    render();
+  }, 500);
 }
 function nextReveal() {
   state.revealIndex++;
