@@ -466,6 +466,12 @@ main { padding: 16px 20px; }
   color: var(--gray-light); font-size: 15px; cursor: pointer; padding: 4px 6px;
   font-family: inherit; line-height: 1;
 }
+.shop-recipes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+.shop-recipe-btn {
+  background: var(--primary-light); border: none; color: var(--primary);
+  border-radius: 20px; padding: 8px 14px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
 
 .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 
@@ -1286,6 +1292,10 @@ function renderShopping() {
   const total = state.shoppingList.size;
   const done = state.shoppingDone.size;
 
+  // Recettes d'origine de la liste : un bouton pour rouvrir chaque fiche.
+  const srcRecipes = [...new Set(Object.values(state.shoppingSrc).flat())]
+    .map(rid => RECIPES.find(r => r.id === rid)).filter(Boolean);
+
   return `
     <div class="composer-info" style="margin-bottom:18px;">
       <span><strong>${done}/${total}</strong> cochés</span>
@@ -1294,6 +1304,7 @@ function renderShopping() {
         <button class="clear-btn" onclick="clearShopping()">Tout effacer</button>
       </span>
     </div>
+    ${srcRecipes.length ? `<div class="shop-recipes">${srcRecipes.map(r => `<button class="shop-recipe-btn" onclick="openRecipe('${r.id}')">${r.emoji} ${r.name}</button>`).join('')}</div>` : ''}
     ${Object.entries(grouped).map(([catKey, items]) => `
       <div class="shopping-group">
         <h3>${INGREDIENTS[catKey].label}</h3>
