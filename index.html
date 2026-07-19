@@ -1841,10 +1841,10 @@ function shareShopping() {
   let text = '🛒 Liste de courses — Keskonmange\n';
   Object.entries(grouped).forEach(([catKey, ids]) => {
     text += `\n${INGREDIENTS[catKey].label} :\n`;
+    // Juste l'ingrédient à acheter — les quantités de cuisson restent dans
+    // l'app (elles n'ont pas de sens en rayon : « 4 tours de moulin »…).
     ids.forEach(id => {
-      const srcs = (state.shoppingSrc[id] || []).map(rid => RECIPES.find(x => x.id === rid)).filter(r => r && r.qty && r.qty[id]);
-      const qtys = srcs.map(r => scaleQty(r.qty[id], servingsFactor(r))).join(' + ');
-      text += `• ${ING_MAP[id].name}${qtys ? ' — ' + qtys : ''}\n`;
+      text += `• ${ING_MAP[id].name}\n`;
     });
   });
   text += '\nhttps://design-effect.github.io/keskonmange/';
