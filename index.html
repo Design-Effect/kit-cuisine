@@ -1689,6 +1689,7 @@ function openRecipe(id) {
 
     <button class="btn-primary" onclick="addMissingToShopping('${r.id}')">🛒 Ajouter les ingrédients à ma liste</button>
     <button class="btn-ghost" onclick="toggleFav('${r.id}'); openRecipe('${r.id}')">${state.favorites.has(r.id)?'💔 Retirer des favoris':'❤️ Ajouter aux favoris'}</button>
+    ${state.shoppingList.size || state.selectedIngredients.size ? `<button class="shop-reset-btn" style="margin-top:10px;" onclick="resetAfterCooking()">🍳 Recette faite — on remet à zéro</button>` : ''}
   `;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1739,8 +1740,10 @@ function toggleShopDone(id) {
 }
 
 // « Recette faite » : liste de courses + composeur remis à zéro, retour au
-// composeur pour le prochain repas.
+// composeur pour le prochain repas. Accessible depuis la liste de courses
+// (tout coché) et depuis la fiche recette.
 function resetAfterCooking() {
+  closeModal();
   state.shoppingList.clear();
   state.shoppingDone.clear();
   state.shoppingSrc = {};
