@@ -357,6 +357,20 @@ main { padding: 16px 20px; }
 .empty-text { font-size: 14px; line-height: 1.5; }
 
 /* Modal */
+/* « Bien joué, chef ! » — écran de félicitations après « Recette faite » */
+.cheer-overlay {
+  position: fixed; inset: 0; z-index: 200; display: none;
+  align-items: center; justify-content: center; text-align: center;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; opacity: 0; transition: opacity 0.35s;
+}
+.cheer-overlay.show { display: flex; }
+.cheer-overlay.visible { opacity: 1; }
+.cheer-emoji { font-size: 72px; margin-bottom: 12px; animation: cheer-pop 0.5s; }
+.cheer-title { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; }
+.cheer-sub { font-size: 15px; margin-top: 6px; opacity: 0.85; font-weight: 600; }
+@keyframes cheer-pop { 0% { transform: scale(0.3); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(15,10,5,0.55);
   z-index: 100; display: none; align-items: flex-end;
@@ -392,8 +406,10 @@ main { padding: 16px 20px; }
 .modal-ing-list li {
   padding: 9px 10px; border-radius: 8px; font-size: 14px;
   display: flex; align-items: center; gap: 10px;
-  margin-bottom: 2px;
+  margin-bottom: 2px; cursor: pointer; user-select: none;
 }
+.modal-ing-list li:active { background: var(--primary-light); }
+.modal-ing-hint { font-size: 12px; color: var(--gray); margin: -4px 0 10px; }
 .modal-ing-list li.have { background: var(--secondary-light); color: var(--dark); font-weight: 600; }
 .modal-ing-list li.missing { color: var(--gray); }
 .modal-ing-list li .ing-ico { font-size: 18px; }
@@ -670,6 +686,14 @@ header { position: relative; }
       <span>Courses</span>
     </button>
   </nav>
+</div>
+
+<div class="cheer-overlay" id="cheer">
+  <div>
+    <div class="cheer-emoji">👨‍🍳</div>
+    <div class="cheer-title">Bien joué, chef !</div>
+    <div class="cheer-sub">Bon appétit 🍽️</div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
@@ -1471,6 +1495,20 @@ function toggleIngredient(id) {
   render();
 }
 
+// Cocher un ingrédient depuis la fiche recette : possédé ↔ non possédé.
+// Ne réinitialise pas la révélation (contrairement à toggleIngredient).
+function toggleIngRecipe(id, rid) {
+  if (state.selectedIngredients.has(id) || state.shoppingDone.has(id)) {
+    state.selectedIngredients.delete(id);
+    state.shoppingDone.delete(id);
+  } else {
+    state.selectedIngredients.add(id);
+  }
+  saveState();
+  render();
+  openRecipe(rid);
+}
+
 function clearComposer() {
   state.selectedIngredients.clear();
   state.revealIndex = null;
@@ -1670,14 +1708,14 @@ function openRecipe(id) {
 
     <div class="modal-section">
       <h4>Ingrédients</h4>
+      <div class="modal-ing-hint">Appuie sur un ingrédient pour cocher ce que tu as.</div>
       <ul class="modal-ing-list">
         ${r.ingredients.map(id => {
           const ing = ING_MAP[id];
           // Coché dans la liste de courses = acheté, donc on l'a aussi.
-          const have = havePrefix && (state.selectedIngredients.has(id) || state.shoppingDone.has(id));
-          const cls = !havePrefix ? '' : (have ? 'have' : 'missing');
-          const icon = !havePrefix ? '•' : (have ? '✓' : '○');
-          return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span>${r.qty&&r.qty[id]?`<span class="ing-qty">${scaleQty(r.qty[id],f)}</span>`:''}</li>`;
+          const have = state.selectedIngredients.has(id) || state.shoppingDone.has(id);
+          const cls = have ? 'have' : (havePrefix ? 'missing' : '');
+          return `<li class="${cls}" onclick="toggleIngRecipe('${id}','${r.id}')"><span>${have ? '✓' : '○'}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span>${r.qty&&r.qty[id]?`<span class="ing-qty">${scaleQty(r.qty[id],f)}</span>`:''}</li>`;
         }).join('')}
       </ul>
     </div>
@@ -1741,19 +1779,27 @@ function toggleShopDone(id) {
   render();
 }
 
-// « Recette faite » : liste de courses + composeur remis à zéro, retour au
-// composeur pour le prochain repas. Accessible depuis la liste de courses
-// (tout coché) et depuis la fiche recette.
+// « Recette faite » : message « Bien joué, chef ! », puis liste de courses +
+// composeur remis à zéro et retour au composeur pour le prochain repas.
+// Accessible depuis la liste de courses (tout coché) et la fiche recette.
 function resetAfterCooking() {
+  const cheer = document.getElementById('cheer');
+  if (cheer.classList.contains('show')) return;
   closeModal();
-  state.shoppingList.clear();
-  state.shoppingDone.clear();
-  state.shoppingSrc = {};
-  state.selectedIngredients.clear();
-  state.revealIndex = null;
-  state.revealFailed = false;
-  saveState();
-  setTab('composer');
+  cheer.classList.add('show');
+  requestAnimationFrame(() => cheer.classList.add('visible'));
+  setTimeout(() => {
+    state.shoppingList.clear();
+    state.shoppingDone.clear();
+    state.shoppingSrc = {};
+    state.selectedIngredients.clear();
+    state.revealIndex = null;
+    state.revealFailed = false;
+    saveState();
+    setTab('composer');
+    cheer.classList.remove('visible');
+    setTimeout(() => cheer.classList.remove('show'), 400);
+  }, 1700);
 }
 
 function shareShopping() {
