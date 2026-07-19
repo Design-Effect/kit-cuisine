@@ -1780,7 +1780,7 @@ function toggleShopDone(id) {
 }
 
 // « Recette faite » : message « Bien joué, chef ! », puis liste de courses +
-// composeur remis à zéro et retour au composeur pour le prochain repas.
+// composeur remis à zéro et retour à l'accueil.
 // Accessible depuis la liste de courses (tout coché) et la fiche recette.
 function resetAfterCooking() {
   const cheer = document.getElementById('cheer');
@@ -1796,7 +1796,7 @@ function resetAfterCooking() {
     state.revealIndex = null;
     state.revealFailed = false;
     saveState();
-    setTab('composer');
+    setTab('discover');
     cheer.classList.remove('visible');
     setTimeout(() => cheer.classList.remove('show'), 400);
   }, 1700);
