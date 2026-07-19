@@ -472,6 +472,13 @@ main { padding: 16px 20px; }
   border-radius: 20px; padding: 8px 14px; font-size: 13px; font-weight: 700;
   cursor: pointer; font-family: inherit;
 }
+.shop-reset-btn {
+  display: block; width: 100%; margin-top: 6px; padding: 14px; border: none;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: white; font-family: inherit; font-size: 15px; font-weight: 800;
+  cursor: pointer; box-shadow: var(--shadow-lg); animation: pulse-soft 1.8s infinite;
+}
 
 .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 
@@ -1324,6 +1331,10 @@ function renderShopping() {
         `;}).join('')}
       </div>
     `).join('')}
+    ${done === total ? `
+      <div class="reveal-complete" style="margin-top:24px;">🎉 Tout est coché, chef !</div>
+      <button class="shop-reset-btn" onclick="resetAfterCooking()">🍳 Recette faite — on remet à zéro</button>
+    ` : ''}
   `;
 }
 
@@ -1713,6 +1724,19 @@ function toggleShopDone(id) {
   else state.shoppingDone.add(id);
   saveState();
   render();
+}
+
+// « Recette faite » : liste de courses + composeur remis à zéro, retour au
+// composeur pour le prochain repas.
+function resetAfterCooking() {
+  state.shoppingList.clear();
+  state.shoppingDone.clear();
+  state.shoppingSrc = {};
+  state.selectedIngredients.clear();
+  state.revealIndex = null;
+  state.revealFailed = false;
+  saveState();
+  setTab('composer');
 }
 
 function shareShopping() {
