@@ -1403,8 +1403,10 @@ function matchingRecipes() {
       // Les basiques du placard (sel, poivre, huile) ne comptent pas : ils
       // matchent tout le monde et noient les vraies correspondances.
       const useful = r.ingredients.filter(i => !PANTRY_STAPLES.includes(i));
-      const matches = useful.filter(i => state.selectedIngredients.has(i)).length;
-      const missing = useful.filter(i => !state.selectedIngredients.has(i));
+      // Possédé = coché au composeur OU acheté (coché dans la liste de courses).
+      const owned = i => state.selectedIngredients.has(i) || state.shoppingDone.has(i);
+      const matches = useful.filter(owned).length;
+      const missing = useful.filter(i => !owned(i));
       return {...r, matches, missing, usefulCount: useful.length};
     })
     .filter(r => {
