@@ -466,12 +466,17 @@ main { padding: 16px 20px; }
   color: var(--gray-light); font-size: 15px; cursor: pointer; padding: 4px 6px;
   font-family: inherit; line-height: 1;
 }
-.shop-recipes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.shop-recipe-btn {
-  background: var(--primary-light); border: none; color: var(--primary);
-  border-radius: 20px; padding: 8px 14px; font-size: 13px; font-weight: 700;
-  cursor: pointer; font-family: inherit;
+.shop-recipes { margin-bottom: 18px; }
+.shop-recipe-card {
+  width: 100%; text-align: left; background: var(--white); border: none;
+  border-radius: var(--radius); padding: 10px; margin-bottom: 8px;
+  box-shadow: var(--shadow); display: flex; align-items: center; gap: 12px;
+  cursor: pointer; font-family: inherit; transition: transform 0.15s;
 }
+.shop-recipe-card:active { transform: scale(0.98); }
+.shop-recipe-card img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+.shop-recipe-name { display: block; font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 2px; }
+.shop-recipe-link { display: block; font-size: 12px; font-weight: 700; color: var(--primary); }
 .shop-reset-btn {
   display: block; width: 100%; margin-top: 6px; padding: 14px; border: none;
   border-radius: var(--radius);
@@ -1311,7 +1316,14 @@ function renderShopping() {
         <button class="clear-btn" onclick="clearShopping()">Tout effacer</button>
       </span>
     </div>
-    ${srcRecipes.length ? `<div class="shop-recipes">${srcRecipes.map(r => `<button class="shop-recipe-btn" onclick="openRecipe('${r.id}')">${r.emoji} ${r.name}</button>`).join('')}</div>` : ''}
+    ${srcRecipes.length ? `<div class="shop-recipes">${srcRecipes.map(r => `
+      <button class="shop-recipe-card" onclick="openRecipe('${r.id}')">
+        <img src="${recipeImage(r)}" alt="${escapeXml(r.name)}">
+        <span>
+          <span class="shop-recipe-name">${r.emoji} ${r.name}</span>
+          <span class="shop-recipe-link">Voir la recette →</span>
+        </span>
+      </button>`).join('')}</div>` : ''}
     ${Object.entries(grouped).map(([catKey, items]) => `
       <div class="shopping-group">
         <h3>${INGREDIENTS[catKey].label}</h3>
