@@ -1615,7 +1615,7 @@ function openRecipe(id) {
   const r = RECIPES.find(x => x.id === id);
   if (!r) return;
   const modal = document.getElementById('modal');
-  const havePrefix = state.selectedIngredients.size > 0;
+  const havePrefix = state.selectedIngredients.size > 0 || state.shoppingDone.size > 0;
   const f = servingsFactor(r);
   modal.innerHTML = `
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -1637,7 +1637,8 @@ function openRecipe(id) {
       <ul class="modal-ing-list">
         ${r.ingredients.map(id => {
           const ing = ING_MAP[id];
-          const have = havePrefix && state.selectedIngredients.has(id);
+          // Coché dans la liste de courses = acheté, donc on l'a aussi.
+          const have = havePrefix && (state.selectedIngredients.has(id) || state.shoppingDone.has(id));
           const cls = !havePrefix ? '' : (have ? 'have' : 'missing');
           const icon = !havePrefix ? '•' : (have ? '✓' : '○');
           return `<li class="${cls}"><span>${icon}</span><span class="ing-ico">${ing?ing.emoji:''}</span><span>${ing?ing.name:id}</span>${r.qty&&r.qty[id]?`<span class="ing-qty">${scaleQty(r.qty[id],f)}</span>`:''}</li>`;
@@ -1667,14 +1668,15 @@ function closeModal() {
   releaseWakeLock();
 }
 
-// Basiques du placard : jamais ajoutés à la liste de courses.
+// Basiques du placard : ignorés par le moteur de correspondance (ils matchent
+// tout le monde), mais bien ajoutés à la liste de courses — on peut en manquer.
 const PANTRY_STAPLES = ['sel', 'poivre', 'huile_olive'];
 
 function addMissingToShopping(rid) {
   const r = RECIPES.find(x => x.id === rid);
   let added = 0;
   r.ingredients.forEach(id => {
-    if (!state.selectedIngredients.has(id) && !PANTRY_STAPLES.includes(id)) {
+    if (!state.selectedIngredients.has(id)) {
       state.shoppingList.add(id);
       if (!state.shoppingSrc[id]) state.shoppingSrc[id] = [];
       if (!state.shoppingSrc[id].includes(rid)) state.shoppingSrc[id].push(rid);
