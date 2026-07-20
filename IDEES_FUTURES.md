@@ -43,6 +43,19 @@ Pistes d'implémentation à creuser le moment venu :
   story/un réel par pack
 - Positionnement Premium possible (packs pays)
 
+## 🍰 Section desserts (idée du 20/07/2026)
+
+Ajouter une catégorie dédiée aux desserts, distincte des repas.
+
+Pistes d'implémentation à creuser le moment venu :
+- Nouveau type de recette `dessert` + filtre/onglet dédié (à ne pas mélanger
+  avec « Choisis pour moi » qui doit rester orienté repas)
+- Idées de contenu : classiques faits maison (gâteaux, crêpes, tiramisu…),
+  desserts rapides en −15 min, desserts par pays (pastéis de nata 🇵🇹,
+  cornes de gazelle 🇲🇦, tiramisu 🇮🇹…) — synergie avec l'idée « recettes par pays »
+- Synergie possible avec les groupes par objectif (desserts légers / protéinés)
+- Positionnement Premium possible (pack desserts)
+
 ---
 
 ## 📥 Idées en vrac (à trier)
