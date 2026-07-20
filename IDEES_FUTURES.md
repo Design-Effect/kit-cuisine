@@ -1,0 +1,50 @@
+# Keskonmange — Idées & futures mises à jour
+
+> Backlog des évolutions possibles. On note tout ici au fil de l'eau ; rien n'est
+> engagé tant que ce n'est pas décidé explicitement. À relire avant chaque
+> nouvelle version pour prioriser.
+>
+> **Créé le** : 20 juillet 2026 (jour du lancement réseaux)
+
+---
+
+## 🥗 Groupes de repas par objectif (idée du 20/07/2026)
+
+Proposer des collections de repas adaptées à un objectif nutritionnel :
+
+- **Repas protéinés — sèche** : recettes riches en protéines, adaptées à une
+  période de sèche
+- **Perte de poids — déficit calorique** : repas pensés pour un déficit
+  calorique (portions/calories maîtrisées)
+
+Pistes d'implémentation à creuser le moment venu :
+- Simple filtre/chip supplémentaire (comme « Végé », « Familial ») ou vraie
+  section « Objectifs » dédiée ?
+- Nécessiterait d'ajouter les macros (protéines/calories) aux recettes
+  concernées — travail de données à chiffrer
+- Positionnement Premium possible (collections d'objectif = valeur ajoutée)
+
+## 🌍 Recettes par pays (idée du 20/07/2026)
+
+Collections de recettes classées par cuisine du monde :
+
+- Recettes portugaises
+- Recettes italiennes
+- Recettes marocaines
+- Recettes espagnoles
+- Recettes tunisiennes
+- etc. (à étendre selon la demande)
+
+Pistes d'implémentation à creuser le moment venu :
+- Ajout d'un champ `pays`/`cuisine` sur les recettes + filtre par drapeau 🇵🇹 🇮🇹 🇲🇦 🇪🇸 🇹🇳
+- Certaines recettes existantes sont déjà rattachables (couscous, tajine,
+  bolognaise…) — commencer par taguer l'existant avant de produire du neuf
+- Bon levier marketing : « le pack recettes marocaines est arrivé 🇲🇦 » = une
+  story/un réel par pack
+- Positionnement Premium possible (packs pays)
+
+---
+
+## 📥 Idées en vrac (à trier)
+
+*(section à remplir au fil des retours utilisateurs)*
