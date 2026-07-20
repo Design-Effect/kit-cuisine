@@ -1694,14 +1694,17 @@ window.addEventListener('appinstalled', () => {
 // être forcé vers Chrome par le web ; on adapte donc les instructions à chacun.
 function getInstallContext() {
   if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) return 'installed';
-  if (deferredInstallPrompt) return 'chromium'; // Chrome / Edge / Samsung récent : install native possible
   const ua = navigator.userAgent || '';
+  // Samsung AVANT le test deferredInstallPrompt : son install native empaquette
+  // la PWA avec un SDK ancien → alerte Play Protect « Appli non sécurisée
+  // bloquée » (constaté S22 Ultra, 20 juil). On oriente vers Chrome à la place.
+  if (/SamsungBrowser/.test(ua)) return 'samsung';
+  if (deferredInstallPrompt) return 'chromium'; // Chrome / Edge : install native propre (WebAPK Google)
   const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const inApp = /FBAN|FBAV|Instagram|Line|Twitter|Snapchat|Pinterest|TikTok|musical_ly|GSA\/|; wv\)/.test(ua);
   if (inApp) return isIOS ? 'inapp-ios' : 'inapp-android';
   if (isIOS) return 'ios';
   if (/FxiOS|Firefox/.test(ua)) return 'firefox';
-  if (/SamsungBrowser/.test(ua)) return 'samsung';
   return 'other';
 }
 
@@ -1725,8 +1728,9 @@ function refreshInstallButton() {
 }
 
 async function triggerInstall() {
-  // Chromium : prompt d'installation natif.
-  if (deferredInstallPrompt) {
+  // Chromium : prompt d'installation natif. (Samsung exclu même si le prompt
+  // existe : son install déclenche l'alerte Play Protect → guide vers Chrome.)
+  if (getInstallContext() === 'chromium' && deferredInstallPrompt) {
     deferredInstallPrompt.prompt();
     const { outcome } = await deferredInstallPrompt.userChoice;
     if (outcome === 'accepted') {
@@ -1793,14 +1797,14 @@ function installGuideContent(ctx) {
       };
     case 'samsung':
       return {
-        emoji: '📲',
-        title: 'Installe Keskonmange',
-        sub: 'Depuis Samsung Internet.',
+        emoji: '🧭',
+        title: 'Installe via Chrome',
+        sub: 'Depuis le navigateur Samsung, Android affiche une fausse alerte de sécurité à l\'installation. Avec Chrome, ça s\'installe proprement en 2 taps.',
         steps: [
-          step(1, 'Appuie sur le menu <strong>≡</strong> en bas à droite.'),
-          step(2, 'Choisis <strong>« Ajouter la page à »</strong> puis <strong>« Écran d\'accueil »</strong>.'),
+          step(1, '<a href="' + chromeIntentUrl() + '" style="color:var(--primary);font-weight:800;text-decoration:underline;">👉 Ouvrir dans Chrome</a>'),
+          step(2, 'Dans Chrome, appuie sur <strong>« Installe l\'app sur ton écran »</strong> (ou menu <strong>⋮ → Installer l\'application</strong>).'),
         ],
-        note: 'Astuce : dans <strong>Chrome</strong>, un bouton d\'installation apparaît automatiquement.',
+        note: 'L\'app est sûre — l\'alerte vient de la façon dont le navigateur Samsung empaquette les applis web, pas de Keskonmange.',
       };
     default:
       return {
