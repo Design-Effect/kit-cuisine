@@ -8,6 +8,21 @@
 
 ---
 
+## ⚖️ Principe directeur — la version gratuite évolue aussi (fixé le 20/07/2026)
+
+**Chaque cycle de mises à jour doit apporter du contenu à la version
+gratuite, pas seulement au Premium.** Par équité envers les utilisateurs :
+l'app ne doit jamais donner le sentiment qu'on ne cherche qu'à faire payer.
+
+En pratique :
+- À chaque nouveau pack/section (pays, desserts, en-cas, Ramadan…), une
+  partie des recettes est offerte en gratuit, le reste en Premium
+- Le gratuit reste une vraie app utile au quotidien, pas une vitrine bridée
+- Bénéfice indirect : un gratuit généreux = plus d'installations, plus de
+  bouche-à-oreille, et in fine plus de conversions Premium naturelles
+
+---
+
 ## 🥗 Groupes de repas par objectif (idée du 20/07/2026)
 
 Proposer des collections de repas adaptées à un objectif nutritionnel :
@@ -90,6 +105,19 @@ Pistes d'implémentation à creuser le moment venu :
 - Positionnement : bon candidat pour un pack Premium, OU offert à tous comme
   geste envers la communauté (à décider — l'option gratuite peut générer
   beaucoup de bouche-à-oreille)
+
+## 🍳 Recettes petit-déjeuner (idée du 20/07/2026)
+
+Catégorie dédiée au petit-déjeuner, distincte des repas.
+
+Pistes d'implémentation à creuser le moment venu :
+- Idées de contenu : pancakes, porridge/overnight oats, œufs (brouillés,
+  omelettes…), msemen/baghrir 🇲🇦, tartines complètes, bowls…
+- Déclinable par objectif (petit-déj protéiné, petit-déj léger) et par pays —
+  synergie avec les autres sections
+- Cas d'usage fort : « on mange quoi au petit-déj ce week-end ? » — moment
+  familial, bon sujet de stories le samedi/dimanche matin
+- Répartition gratuit/Premium selon le principe directeur ci-dessus
 
 ---
 
