@@ -71,6 +71,26 @@ Pistes d'implémentation à creuser le moment venu :
   volume de contenu rapide
 - Positionnement Premium possible (pack en-cas sains)
 
+## 🌙 Recettes spécial Ramadan (idée du 20/07/2026)
+
+Collection dédiée au mois de Ramadan.
+
+Pistes d'implémentation à creuser le moment venu :
+- Deux sous-catégories naturelles : **iftar** (rupture du jeûne : dattes,
+  chorba/harira, bricks, plats complets…) et **suhur** (repas d'avant l'aube :
+  rassasiants, hydratants, énergie longue durée — avoine, œufs, dattes…)
+- Forte synergie avec « recettes par pays » (chorba algérienne, harira
+  marocaine, soupes tunisiennes…) et « en-cas sains » (éviter le sucré
+  excessif à l'iftar)
+- Section saisonnière : à mettre en avant dans l'app ~2 semaines avant le
+  début du Ramadan, calendrier hégirien à l'appui
+- **Gros levier marketing annuel** : campagne « Prépare ton Ramadan avec
+  Keskonmange 🌙 » à chaque édition — audience très réceptive, partages
+  familiaux naturels
+- Positionnement : bon candidat pour un pack Premium, OU offert à tous comme
+  geste envers la communauté (à décider — l'option gratuite peut générer
+  beaucoup de bouche-à-oreille)
+
 ---
 
 ## 📥 Idées en vrac (à trier)
