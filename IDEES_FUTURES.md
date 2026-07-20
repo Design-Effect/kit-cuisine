@@ -8,6 +8,17 @@
 
 ---
 
+## 📅 Rythme de mises à jour (décidé le 20/07/2026)
+
+- **Bugs** : correctifs immédiats, au fil de l'eau (avantage PWA — pas de review store)
+- **4 premières semaines post-lancement** : aucune nouvelle feature — marketing,
+  retours utilisateurs et correctifs uniquement
+- **Contenu** : 1 mise à jour par mois (pack de 5-8 recettes) — chaque update
+  s'accompagne d'une annonce (story + réel + statut), jamais de mise à jour silencieuse
+- **Grosses sections** (nouvelle catégorie complète) : tous les 2-3 mois
+- **Pack Ramadan** : échéance calendaire — sortie ~2 semaines avant le début du
+  mois (prochain Ramadan : ~février 2027)
+
 ## ⚖️ Principe directeur — la version gratuite évolue aussi (fixé le 20/07/2026)
 
 **Chaque cycle de mises à jour doit apporter du contenu à la version
