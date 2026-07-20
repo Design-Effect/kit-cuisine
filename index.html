@@ -655,6 +655,20 @@ header { position: relative; }
   width: 26px; height: 26px; border-radius: 50%; font-size: 13px;
   cursor: pointer; flex-shrink: 0;
 }
+
+/* Guide d'installation (modal instructions sur-mesure par navigateur) */
+.guide-hero-emoji { font-size: 44px; text-align: center; display: block; margin-bottom: 6px; }
+.guide-title { font-size: 19px; font-weight: 800; text-align: center; color: var(--dark); margin: 2px 0 4px; }
+.guide-sub { text-align: center; color: var(--gray); font-size: 13px; line-height: 1.4; margin-bottom: 18px; }
+.guide-steps { list-style: none; padding: 0; margin: 0 0 4px; display: flex; flex-direction: column; gap: 12px; }
+.guide-step { display: flex; align-items: flex-start; gap: 12px; }
+.guide-step-num {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--primary); color: #fff; font-weight: 800; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.guide-step-text { flex: 1; font-size: 14px; line-height: 1.45; color: var(--dark); padding-top: 2px; }
+.guide-note { font-size: 12px; color: var(--gray); text-align: center; margin-top: 14px; line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -1172,7 +1186,7 @@ function renderPremiumTeaser() {
 }
 
 function shouldShowInstallBanner() {
-  return deferredInstallPrompt && !state.installDismissed && state.tab === 'discover';
+  return canInstall() && !state.installDismissed && state.tab === 'discover';
 }
 
 function shouldShowHouseholdBanner() {
@@ -1663,22 +1677,159 @@ function resetPremium() {
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
-  document.getElementById('installBtn').style.display = 'flex';
+  refreshInstallButton();
   if (state.tab === 'discover') render();
 });
 
+// Une fois l'app installée, on nettoie l'UI d'installation.
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  document.body.classList.add('installed');
+  refreshInstallButton();
+  render();
+});
+
+// Détecte le contexte d'installation courant.
+// Le navigateur par défaut du téléphone (Samsung Internet, Firefox…) ne peut PAS
+// être forcé vers Chrome par le web ; on adapte donc les instructions à chacun.
+function getInstallContext() {
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) return 'installed';
+  if (deferredInstallPrompt) return 'chromium'; // Chrome / Edge / Samsung récent : install native possible
+  const ua = navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const inApp = /FBAN|FBAV|Instagram|Line|Twitter|Snapchat|Pinterest|TikTok|musical_ly|GSA\/|; wv\)/.test(ua);
+  if (inApp) return isIOS ? 'inapp-ios' : 'inapp-android';
+  if (isIOS) return 'ios';
+  if (/FxiOS|Firefox/.test(ua)) return 'firefox';
+  if (/SamsungBrowser/.test(ua)) return 'samsung';
+  return 'other';
+}
+
+// Peut-on installer (d'une manière ou d'une autre) dans ce contexte ?
+function canInstall() {
+  return getInstallContext() !== 'installed';
+}
+
+// Lien "intent" Android qui force l'ouverture dans Chrome (utile depuis un
+// navigateur in-app comme Instagram). Échoue proprement si Chrome est absent.
+function chromeIntentUrl() {
+  const u = new URL(location.href);
+  return 'intent://' + u.host + u.pathname + u.search + '#Intent;scheme=https;package=com.android.chrome;end';
+}
+
+function refreshInstallButton() {
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = canInstall() ? 'flex' : 'none';
+}
+
 async function triggerInstall() {
-  if (!deferredInstallPrompt) {
-    alert('Pour installer : ouvre le menu de ton navigateur et choisis "Ajouter à l\'écran d\'accueil".');
+  // Chromium : prompt d'installation natif.
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    if (outcome === 'accepted') {
+      deferredInstallPrompt = null;
+      refreshInstallButton();
+    }
+    render();
     return;
   }
-  deferredInstallPrompt.prompt();
-  const { outcome } = await deferredInstallPrompt.userChoice;
-  if (outcome === 'accepted') {
-    deferredInstallPrompt = null;
-    document.getElementById('installBtn').style.display = 'none';
+  // Ailleurs (iOS Safari, in-app, Firefox…) : instructions sur-mesure.
+  openInstallGuide();
+}
+
+// Contenu du guide adapté au navigateur détecté.
+function installGuideContent(ctx) {
+  const step = (n, txt) => `<li class="guide-step"><span class="guide-step-num">${n}</span><span class="guide-step-text">${txt}</span></li>`;
+  switch (ctx) {
+    case 'ios':
+      return {
+        emoji: '📲',
+        title: 'Installe Keskonmange',
+        sub: 'Sur iPhone/iPad, ça se fait depuis le bouton Partager de Safari.',
+        steps: [
+          step(1, 'Appuie sur <strong>Partager</strong> <span style="white-space:nowrap">⎋</span> en bas de l\'écran.'),
+          step(2, 'Fais défiler et choisis <strong>« Sur l\'écran d\'accueil »</strong>.'),
+          step(3, 'Appuie sur <strong>Ajouter</strong> en haut à droite. C\'est fait 🎉'),
+        ],
+        note: 'Si tu ne vois pas ces options, ouvre d\'abord la page dans <strong>Safari</strong> (pas dans une autre app).',
+      };
+    case 'inapp-ios':
+      return {
+        emoji: '🧭',
+        title: 'Ouvre la page dans Safari',
+        sub: 'Tu es dans le navigateur intégré d\'une app : l\'installation n\'est possible que depuis Safari.',
+        steps: [
+          step(1, 'Appuie sur le menu <strong>•••</strong> (ou l\'icône Safari) en haut/bas de l\'écran.'),
+          step(2, 'Choisis <strong>« Ouvrir dans Safari »</strong>.'),
+          step(3, 'Dans Safari : <strong>Partager ⎋ → Sur l\'écran d\'accueil</strong>.'),
+        ],
+        note: null,
+      };
+    case 'inapp-android':
+      return {
+        emoji: '🧭',
+        title: 'Ouvre la page dans Chrome',
+        sub: 'Tu es dans le navigateur intégré d\'une app. Ouvre-la dans Chrome pour pouvoir l\'installer.',
+        steps: [
+          step(1, '<a href="' + chromeIntentUrl() + '" style="color:var(--primary);font-weight:800;text-decoration:underline;">👉 Ouvrir dans Chrome</a> (ou menu <strong>⋮ → Ouvrir dans le navigateur</strong>).'),
+          step(2, 'Dans Chrome, appuie sur le menu <strong>⋮</strong> en haut à droite.'),
+          step(3, 'Choisis <strong>« Installer l\'application »</strong> ou <strong>« Ajouter à l\'écran d\'accueil »</strong>.'),
+        ],
+        note: null,
+      };
+    case 'firefox':
+      return {
+        emoji: '📲',
+        title: 'Installe Keskonmange',
+        sub: 'Depuis Firefox, en 2 taps.',
+        steps: [
+          step(1, 'Appuie sur le menu <strong>⋮</strong> en haut à droite.'),
+          step(2, 'Choisis <strong>« Installer »</strong> ou <strong>« Ajouter à l\'écran d\'accueil »</strong>.'),
+        ],
+        note: 'Astuce : dans <strong>Chrome</strong>, un bouton d\'installation apparaît automatiquement.',
+      };
+    case 'samsung':
+      return {
+        emoji: '📲',
+        title: 'Installe Keskonmange',
+        sub: 'Depuis Samsung Internet.',
+        steps: [
+          step(1, 'Appuie sur le menu <strong>≡</strong> en bas à droite.'),
+          step(2, 'Choisis <strong>« Ajouter la page à »</strong> puis <strong>« Écran d\'accueil »</strong>.'),
+        ],
+        note: 'Astuce : dans <strong>Chrome</strong>, un bouton d\'installation apparaît automatiquement.',
+      };
+    default:
+      return {
+        emoji: '📲',
+        title: 'Installe Keskonmange',
+        sub: 'Depuis le menu de ton navigateur.',
+        steps: [
+          step(1, 'Ouvre le menu de ton navigateur (<strong>⋮</strong> ou <strong>≡</strong>).'),
+          step(2, 'Choisis <strong>« Installer l\'application »</strong> ou <strong>« Ajouter à l\'écran d\'accueil »</strong>.'),
+        ],
+        note: 'Pour une install en 1 tap, ouvre plutôt la page dans <strong>Chrome</strong>.',
+      };
   }
-  render();
+}
+
+function openInstallGuide() {
+  const ctx = getInstallContext();
+  if (ctx === 'installed') return;
+  const c = installGuideContent(ctx);
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-handle"></div>
+    <span class="guide-hero-emoji">${c.emoji}</span>
+    <div class="guide-title">${c.title}</div>
+    <div class="guide-sub">${c.sub}</div>
+    <ul class="guide-steps">${c.steps.join('')}</ul>
+    ${c.note ? `<div class="guide-note">${c.note}</div>` : ''}
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 
 function dismissInstall() {
@@ -1892,6 +2043,10 @@ if ('serviceWorker' in navigator) {
 if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
   document.body.classList.add('installed');
 }
+
+// Afficher le bouton d'installation du header dès qu'une install est possible
+// (Chromium ET navigateurs à install manuelle : iOS Safari, Firefox, Samsung…).
+refreshInstallButton();
 
 render();
 </script>
