@@ -56,6 +56,21 @@ Pistes d'implémentation à creuser le moment venu :
 - Synergie possible avec les groupes par objectif (desserts légers / protéinés)
 - Positionnement Premium possible (pack desserts)
 
+## 🥜 Section en-cas sains (idée du 20/07/2026)
+
+Ajouter une catégorie d'en-cas / collations saines, distincte des repas et
+des desserts.
+
+Pistes d'implémentation à creuser le moment venu :
+- Idées de contenu : energy balls, fruits secs/oléagineux, yaourt grec +
+  toppings, houmous + crudités, barres maison, smoothies…
+- Cas d'usage : fringale de 10h/16h, collation post-sport, goûter des enfants
+- Forte synergie avec les groupes par objectif (en-cas protéinés pour la
+  sèche, en-cas faibles en calories pour le déficit)
+- Recettes courtes (souvent sans cuisson) → peu coûteuses à produire, bon
+  volume de contenu rapide
+- Positionnement Premium possible (pack en-cas sains)
+
 ---
 
 ## 📥 Idées en vrac (à trier)
