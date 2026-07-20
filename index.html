@@ -1754,9 +1754,11 @@ function installGuideContent(ctx) {
         title: 'Installe Keskonmange',
         sub: 'Sur iPhone/iPad, ça se fait depuis le bouton Partager de Safari.',
         steps: [
-          step(1, 'Appuie sur <strong>Partager</strong> <span style="white-space:nowrap">⎋</span> en bas de l\'écran.'),
+          // Ne pas indiquer d'emplacement : le bouton Partager est en bas ou en
+          // haut selon la version de Safari et les réglages de l'utilisateur.
+          step(1, 'Appuie sur le bouton <strong>Partager</strong> <span style="white-space:nowrap">⎋</span> de Safari.'),
           step(2, 'Fais défiler et choisis <strong>« Sur l\'écran d\'accueil »</strong>.'),
-          step(3, 'Appuie sur <strong>Ajouter</strong> en haut à droite. C\'est fait 🎉'),
+          step(3, 'Appuie sur <strong>Ajouter</strong>. C\'est fait 🎉'),
         ],
         note: 'Si tu ne vois pas ces options, ouvre d\'abord la page dans <strong>Safari</strong> (pas dans une autre app).',
       };
