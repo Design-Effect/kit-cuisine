@@ -609,6 +609,12 @@ header { position: relative; }
 .price-amount { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; color: var(--primary); }
 .price-cents { font-size: 20px; font-weight: 700; color: var(--primary); vertical-align: top; }
 .price-label { font-size: 13px; color: var(--gray); display: block; margin-top: -4px; }
+.price-old { font-size: 18px; font-weight: 700; color: var(--gray); text-decoration: line-through; margin-right: 8px; }
+.offer-badge {
+  display: inline-block; background: var(--primary); color: #fff;
+  font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 999px;
+  margin-bottom: 6px; letter-spacing: 0.02em;
+}
 
 .code-input-wrapper {
   margin-top: 16px; padding-top: 16px;
@@ -1003,8 +1009,16 @@ let state = {
 let deferredInstallPrompt = null;
 
 // Page de vente Gumroad (produit publié le 19 juillet 2026)
-const PAYMENT_URL = 'https://fervia.gumroad.com/l/keskonmange';
-const PRICE_LABEL = '14<span class="price-cents">,90€</span>';
+// Offre de lancement : code Gumroad LANCEMENT25 (-25%, limité à 50 utilisations).
+// Passer LAUNCH_OFFER à false quand les 50 sont écoulés (le lien /LANCEMENT25
+// retomberait sinon sur le plein tarif au checkout alors que l'app affiche -25%).
+const LAUNCH_OFFER = true;
+const PAYMENT_URL = LAUNCH_OFFER
+  ? 'https://fervia.gumroad.com/l/keskonmange/LANCEMENT25'
+  : 'https://fervia.gumroad.com/l/keskonmange';
+const PRICE_LABEL = LAUNCH_OFFER
+  ? '11<span class="price-cents">,17€</span>'
+  : '14<span class="price-cents">,90€</span>';
 
 // Codes de déverrouillage. Chaque code peut être unique ou multi-usage.
 // Exemples : code générique vente directe, codes ambassadrices, code testeur
@@ -1179,7 +1193,7 @@ function renderPremiumTeaser() {
       <div class="install-banner-emoji">✨</div>
       <div class="install-banner-text">
         <strong>+${locked} recettes Premium à débloquer</strong>
-        Tajines, curry, falafels, risotto, tacos…
+        ${LAUNCH_OFFER ? '🔥 −25% pour les 50 premiers' : 'Tajines, curry, falafels, risotto, tacos…'}
       </div>
     </div>
   `;
@@ -1615,7 +1629,8 @@ function openPremiumModal() {
       </div>
 
       <div class="premium-price">
-        <div><span class="price-amount">${PRICE_LABEL}</span></div>
+        ${LAUNCH_OFFER ? '<div class="offer-badge">🔥 −25% pour les 50 premiers</div>' : ''}
+        <div>${LAUNCH_OFFER ? '<span class="price-old">14,90€</span>' : ''}<span class="price-amount">${PRICE_LABEL}</span></div>
         <div class="price-label">Paiement unique · sans engagement</div>
       </div>
 
