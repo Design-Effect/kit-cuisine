@@ -1714,7 +1714,9 @@ function canInstall() {
 // navigateur in-app comme Instagram). Échoue proprement si Chrome est absent.
 function chromeIntentUrl() {
   const u = new URL(location.href);
-  return 'intent://' + u.host + u.pathname + u.search + '#Intent;scheme=https;package=com.android.chrome;end';
+  const fallback = encodeURIComponent(u.href);
+  return 'intent://' + u.host + u.pathname + u.search +
+    '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + fallback + ';end';
 }
 
 function refreshInstallButton() {

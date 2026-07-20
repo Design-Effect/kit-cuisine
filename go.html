@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keskonmange — Ouverture…</title>
+<meta name="robots" content="noindex">
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
+    background: #FAF3E7; color: #2D2418; margin: 0;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 24px; box-sizing: border-box;
+  }
+  .card { max-width: 340px; }
+  .emoji { font-size: 52px; display: block; margin-bottom: 12px; }
+  h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px; }
+  p { font-size: 14px; color: #8A8070; line-height: 1.5; margin: 0 0 20px; }
+  .btn {
+    display: inline-block; background: #C65D3E; color: #fff; font-weight: 800;
+    font-size: 16px; padding: 14px 28px; border-radius: 16px; text-decoration: none;
+    box-shadow: 0 8px 24px rgba(45,36,24,0.15);
+  }
+  .alt { display: block; margin-top: 16px; font-size: 13px; color: #8A8070; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="card">
+  <span class="emoji">🍽️</span>
+  <h1>Qu'est-ce qu'on mange ?</h1>
+  <p id="msg">Ouverture de l'app…</p>
+  <a class="btn" id="mainBtn" href="./">Ouvrir Keskonmange</a>
+  <a class="alt" id="altLink" href="./" style="display:none;">Continuer dans ce navigateur</a>
+</div>
+<script>
+// Page relais de partage (WhatsApp, Insta, SMS…).
+// WhatsApp ne rend cliquables que les liens https — cette page https fait donc
+// le pont : sur Android hors Chrome, elle bascule vers Chrome via un lien
+// intent (fallback : rester ici). Sur iOS/desktop/Chrome, simple renvoi vers l'app.
+(function () {
+  var APP = './';
+  var ua = navigator.userAgent || '';
+  var isAndroid = /Android/.test(ua);
+  var isChrome = /Chrome\//.test(ua) && !/EdgA|SamsungBrowser|OPR|; wv\)/.test(ua);
+
+  if (isAndroid && !isChrome) {
+    var u = new URL(APP, location.href);
+    var fallback = encodeURIComponent(u.href);
+    var intent = 'intent://' + u.host + u.pathname + u.search +
+      '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + fallback + ';end';
+    document.getElementById('msg').textContent = 'On ouvre l’app dans Chrome pour une meilleure expérience…';
+    var btn = document.getElementById('mainBtn');
+    btn.href = intent;
+    btn.textContent = 'Ouvrir dans Chrome';
+    document.getElementById('altLink').style.display = 'block';
+    // Tentative auto (certains navigateurs exigent un tap : le bouton reste là).
+    setTimeout(function () { location.href = intent; }, 400);
+  } else {
+    // Chrome, iOS, desktop : renvoi direct vers l'app.
+    location.replace(APP);
+  }
+})();
+</script>
+</body>
+</html>
