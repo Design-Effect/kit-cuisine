@@ -684,7 +684,8 @@ header { position: relative; }
     <div class="subtitle" id="headerSub">Trouve ton prochain repas en 2 min</div>
     <div class="header-actions">
       <button class="icon-btn" id="installBtn" onclick="triggerInstall()" style="display:none;" title="Installer l'app">⬇</button>
-      <button class="icon-btn" id="settingsBtn" onclick="openPremiumModal()" title="Premium / Réglages">✨</button>
+      <button class="icon-btn" id="premiumBtn" onclick="openPremiumModal()" title="Premium">✨</button>
+      <button class="icon-btn" id="settingsBtn" onclick="openSettingsModal()" title="Réglages">⚙️</button>
     </div>
   </header>
   <main id="content"></main>
@@ -1583,6 +1584,25 @@ function renderSettingsSection() {
   `;
 }
 
+// ============ RÉGLAGES ============
+function openSettingsModal() {
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-handle"></div>
+    <div class="premium-hero">
+      <div class="premium-hero-emoji">⚙️</div>
+      <div class="premium-hero-title">Réglages</div>
+    </div>
+    ${renderSettingsSection()}
+    ${state.isPremium
+      ? '<div class="hint">✅ Version complète débloquée — merci de ton soutien !</div>'
+      : '<button class="btn-primary" onclick="openPremiumModal()">✨ Découvrir Premium</button>'}
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
 // ============ PREMIUM ============
 function openPremiumModal() {
   const modal = document.getElementById('modal');
@@ -1599,7 +1619,6 @@ function openPremiumModal() {
         Tu as la version complète
       </div>
       <div class="hint">Toutes les recettes sont débloquées. Merci de ton soutien !</div>
-      ${renderSettingsSection()}
       <button class="btn-ghost" onclick="resetPremium()">Réinitialiser (test)</button>
     `;
   } else {
@@ -1648,7 +1667,6 @@ function openPremiumModal() {
         </div>
         <div class="code-msg" id="codeMsg"></div>
       </div>
-      ${renderSettingsSection()}
     `;
   }
   document.getElementById('modalOverlay').classList.add('open');
