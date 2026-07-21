@@ -1596,8 +1596,8 @@ function openSettingsModal() {
     </div>
     ${renderSettingsSection()}
     ${state.isPremium
-      ? '<div class="hint">✅ Version complète débloquée — merci de ton soutien !</div>'
-      : '<button class="btn-primary" onclick="openPremiumModal()">✨ Découvrir Premium</button>'}
+      ? '<div class="hint" style="margin-top:16px;">✅ Version complète débloquée — merci de ton soutien !</div>'
+      : '<button class="btn-primary" style="margin-top:16px;" onclick="openPremiumModal()">✨ Découvrir Premium</button>'}
   `;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
