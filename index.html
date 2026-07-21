@@ -1129,7 +1129,7 @@ function renderSuggCard(r) {
     <div class="sugg-info">
       <div class="sugg-name">${r.name}${locked?' <span class="sugg-lock-tag">PRO</span>':''}</div>
       <div class="sugg-match">${r.matches}/${r.usefulCount} ingrédients · ${pct}%</div>
-      ${!locked && r.missing.length>0 && r.missing.length<=4 ? `<div class="sugg-missing">Manque : ${r.missing.map(m => ING_MAP[m]?.name||m).join(', ')}</div>` : ''}
+      ${!locked && r.missing.length>0 && r.missing.length<=4 ? `<div class="sugg-missing">Manque : ${r.missing.map(m => ING_MAP[m]?.name||m).join(', ')}${r.staplesMissing?.length ? ' (+ basiques)' : ''}</div>` : ''}
       <div class="match-bar"><div class="match-bar-fill ${pct>=80?'full':''}" style="width:${pct}%"></div></div>
     </div>
   </div>`;
@@ -1275,7 +1275,7 @@ function renderComposer() {
       <div class="reveal-caption" onclick="${revLocked?'openPremiumModal()':`openRecipe('${rev.id}')`}">${revLocked?'🔒':rev.emoji} <strong>${rev.name}</strong></div>
       <div class="reveal-sub">${rev.matches}/${rev.usefulCount} de tes ingrédients${revLocked?' · recette Premium':''}</div>
       ${!revLocked ? (rev.missing.length ? `
-        <div class="reveal-missing">Il te manque : ${rev.missing.map(m => ING_MAP[m]?.name || m).join(', ')}</div>
+        <div class="reveal-missing">Il te manque : ${rev.missing.map(m => ING_MAP[m]?.name || m).join(', ')}${rev.staplesMissing?.length ? ` (+ basiques : ${rev.staplesMissing.map(m => ING_MAP[m]?.name || m).join(', ')})` : ''}</div>
         <button class="reveal-shop-btn" onclick="addMissingToShopping('${rev.id}')">🛒 Ajouter à ma liste</button>
       ` : `<div class="reveal-complete">✅ Tu as tout ce qu'il te faut !</div>`) : ''}
       ${sugg.length>1?`<button class="reveal-again" onclick="nextReveal()">🔄 Autre idée</button>`:''}
@@ -1461,7 +1461,11 @@ function matchingRecipes() {
       const owned = i => state.selectedIngredients.has(i) || state.shoppingDone.has(i);
       const matches = useful.filter(owned).length;
       const missing = useful.filter(i => !owned(i));
-      return {...r, matches, missing, usefulCount: useful.length};
+      // Basiques manquants, comptés à part : exclus du score de correspondance
+      // mais transférés dans la liste de courses → on l'affiche pour que le
+      // compte « Manque : X » corresponde à ce qui arrive dans la liste.
+      const staplesMissing = r.ingredients.filter(i => PANTRY_STAPLES.includes(i) && !owned(i));
+      return {...r, matches, missing, staplesMissing, usefulCount: useful.length};
     })
     .filter(r => {
       // La protéine définit le plat : dès qu'une protéine est choisie (viande,
@@ -1927,7 +1931,10 @@ function addMissingToShopping(rid) {
   const r = RECIPES.find(x => x.id === rid);
   let added = 0;
   r.ingredients.forEach(id => {
-    if (!state.selectedIngredients.has(id)) {
+    // Possédé = coché au composeur OU déjà acheté (coché dans la liste) —
+    // même définition que le moteur de correspondance, sinon un article
+    // acheté revient dans la liste.
+    if (!state.selectedIngredients.has(id) && !state.shoppingDone.has(id)) {
       state.shoppingList.add(id);
       if (!state.shoppingSrc[id]) state.shoppingSrc[id] = [];
       if (!state.shoppingSrc[id].includes(rid)) state.shoppingSrc[id].push(rid);

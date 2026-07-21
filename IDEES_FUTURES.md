@@ -130,6 +130,24 @@ Pistes d'implémentation à creuser le moment venu :
   familial, bon sujet de stories le samedi/dimanche matin
 - Répartition gratuit/Premium selon le principe directeur ci-dessus
 
+## 📸 Partage de photos des plats réalisés (idée du 20/07/2026)
+
+L'utilisateur prend une photo de son plat une fois cuisiné et peut la
+partager, associée à la recette — mise en avant des plats les plus proches
+du rendu de la recette.
+
+Pistes d'implémentation à creuser le moment venu :
+- **V1 simple (100% local)** : bouton « 📸 J'ai cuisiné ce plat » sur la
+  recette → photo → partage via le Share Sheet (WhatsApp, Insta…) avec un
+  cadre/texte Keskonmange + lien de l'app → **marketing gratuit par les
+  utilisateurs**
+- **V2 communautaire (nécessite un backend)** : galerie des photos des
+  utilisateurs par recette, mise en avant des plats les plus fidèles à la
+  recette — gros chantier (stockage, modération des images, coûts serveur),
+  à ne pas sous-estimer
+- Commencer par la V1 : zéro coût serveur, cohérente avec l'app sans compte,
+  et chaque partage fait connaître l'app
+
 ---
 
 ## 📥 Idées en vrac (à trier)
